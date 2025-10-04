@@ -26,4 +26,12 @@ public class Mark {
     public User getUser() {
         return user;
     }
+
+    public LocalDateTime getMarkTime() {
+        return markTime;
+    }
+
+    public void setMarkTime(LocalDateTime markTime) {
+        this.markTime = markTime;
+    }
 }
