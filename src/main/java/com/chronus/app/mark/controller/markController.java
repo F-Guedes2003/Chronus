@@ -20,6 +20,6 @@ public class markController {
 
     @PostMapping("/mark")
     public HttpResponse<String> markRoute(@RequestBody Mark requestBody) {
-        return service.validateAndMark(requestBody);
+        return service.addNewMark(requestBody);
     }
 }
