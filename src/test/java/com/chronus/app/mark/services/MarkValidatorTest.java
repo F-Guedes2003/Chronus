@@ -24,6 +24,7 @@ public class MarkValidatorTest {
     @DisplayName("Verifying if a dateTime is already marked")
     public void verifyingIfADateTimeIsMarked() {
         MarkRepository repositoryMock = mock(MarkRepository.class);
+        sut.repository = repositoryMock;
         var dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
         var mark  = new Mark(new User("Flaco López", "password", "flaquitomatador@sep.com"), dateTime);
         when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(mark));

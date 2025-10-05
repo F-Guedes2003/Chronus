@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Service
 public class MarkValidator {
-    private MarkRepository repository;
+    protected MarkRepository repository;
 
     public MarkValidator() {};
 
