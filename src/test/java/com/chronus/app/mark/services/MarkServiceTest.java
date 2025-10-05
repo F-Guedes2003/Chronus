@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
+import java.util.List;
 
 public class MarkServiceTest {
     MarkService sut = new MarkService();
@@ -47,7 +47,7 @@ public class MarkServiceTest {
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
         Mark mark = new Mark(user, dateTime);
 
-        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(Optional.of(new Mark(user, dateTime)));
+        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user, dateTime)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
 
         verify(repositoryMock, atLeast(1)).save(mark);
