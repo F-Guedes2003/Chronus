@@ -44,4 +44,9 @@ public class HttpResponse<T> {
         result = 31 * result + (data != null ? data.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "status: " + status + " | message: " + message + " | data: " + data;
+    }
 }

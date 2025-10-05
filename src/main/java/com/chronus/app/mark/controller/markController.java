@@ -1,7 +1,7 @@
 package com.chronus.app.mark.controller;
 
 import com.chronus.app.mark.Mark;
-import com.chronus.app.mark.MarkService;
+import com.chronus.app.mark.services.MarkService;
 import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

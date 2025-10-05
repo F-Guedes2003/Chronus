@@ -1,5 +1,7 @@
-package com.chronus.app.mark;
+package com.chronus.app.mark.services;
 
+import com.chronus.app.mark.Mark;
+import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,13 +11,15 @@ import java.util.Objects;
 @Service
 public class MarkService {
     protected MarkRepository repository;
+    protected MarkValidator validator;
 
     public MarkService() {
     }
 
     @Autowired
-    public MarkService(MarkRepository repository) {
+    public MarkService(MarkRepository repository, MarkValidator validator) {
         this.repository = repository;
+        this.validator = validator;
     }
 
     public HttpResponse<Mark> addNewMark(Mark mark) {
