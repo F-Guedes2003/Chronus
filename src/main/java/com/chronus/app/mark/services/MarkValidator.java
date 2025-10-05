@@ -16,6 +16,6 @@ public class MarkValidator {
     }
 
     public boolean isDateTimeAlreadyMarked(LocalDateTime dateTime) {
-        return false;
+        return !repository.getMarkByMarkTime(dateTime).isEmpty();
     }
 }
