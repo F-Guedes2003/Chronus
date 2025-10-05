@@ -8,24 +8,34 @@ import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.mark.services.MarkService;
 import com.chronus.app.user.User;
 import com.chronus.app.utils.HttpResponse;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+@ExtendWith(MockitoExtension.class)
 public class MarkServiceTest {
     MarkService sut = new MarkService();
+    @Mock MarkRepository repositoryMock;
+
+    @BeforeEach
+    public void setup() {
+        sut.repository = repositoryMock;
+        sut.validator = new MarkValidator();
+        sut.validator.repository = repositoryMock;
+    }
 
     @Test
     @DisplayName("Adding a mark to a user")
     public void addingANewMarkTest() {
-        MarkRepository repositoryMock = mock(MarkRepository.class);
-        sut.repository = repositoryMock;
-        sut.validator = new MarkValidator();
-        sut.validator.repository = repositoryMock;
         LocalDate date = LocalDate.of(2022, 3, 22);
         LocalTime time = LocalTime.of(8, 25);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
@@ -40,10 +50,6 @@ public class MarkServiceTest {
     @Test
     @DisplayName("Adding a new mark to a date already marked")
     public void addingANewMarkToAnUnavailableDate() {
-        MarkRepository repositoryMock = mock(MarkRepository.class);
-        sut.repository = repositoryMock;
-        sut.validator = new MarkValidator(repositoryMock);
-        sut.validator.repository = repositoryMock;
         LocalDate date = LocalDate.of(2022, 3, 22);
         LocalTime time = LocalTime.of(8, 25);
         LocalDateTime dateTime = LocalDateTime.of(date, time);
