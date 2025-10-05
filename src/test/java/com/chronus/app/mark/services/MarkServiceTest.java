@@ -24,6 +24,8 @@ public class MarkServiceTest {
     public void addingANewMarkTest() {
         MarkRepository repositoryMock = mock(MarkRepository.class);
         sut.repository = repositoryMock;
+        sut.validator = new MarkValidator();
+        sut.validator.repository = repositoryMock;
         LocalDate date = LocalDate.of(2022, 3, 22);
         LocalTime time = LocalTime.of(8, 25);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
@@ -41,6 +43,7 @@ public class MarkServiceTest {
         MarkRepository repositoryMock = mock(MarkRepository.class);
         sut.repository = repositoryMock;
         sut.validator = new MarkValidator(repositoryMock);
+        sut.validator.repository = repositoryMock;
         LocalDate date = LocalDate.of(2022, 3, 22);
         LocalTime time = LocalTime.of(8, 25);
         LocalDateTime dateTime = LocalDateTime.of(date, time);
@@ -49,7 +52,5 @@ public class MarkServiceTest {
 
         when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user, dateTime)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
-
-        verify(repositoryMock, atLeast(1)).save(mark);
     }
 }
