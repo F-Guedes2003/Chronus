@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -33,5 +33,20 @@ public class Mark {
 
     public void setMarkTime(LocalDateTime markTime) {
         this.markTime = markTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Mark other = (Mark) obj;
+        return java.util.Objects.equals(user, other.user) &&
+                java.util.Objects.equals(markTime, other.markTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(user, markTime);
     }
 }

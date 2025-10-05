@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class markController {
 
     @Autowired
-    MarkService service;
+    protected MarkService service;
 
     @GetMapping("/test")
     public String helloController() {
@@ -19,7 +19,7 @@ public class markController {
     }
 
     @PostMapping("/mark")
-    public HttpResponse<String> markRoute(@RequestBody Mark requestBody) {
+    public HttpResponse<Mark> markRoute(@RequestBody Mark requestBody) {
         return service.addNewMark(requestBody);
     }
 }
