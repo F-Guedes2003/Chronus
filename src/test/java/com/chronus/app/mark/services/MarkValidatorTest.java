@@ -60,7 +60,7 @@ public class MarkValidatorTest {
         return Stream.of(Arguments.of(listOne, false), Arguments.of(listTwo, true));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "[{index}] -> Interval validation should return {1}")
     @MethodSource("marksProvider")
     @DisplayName("Verifying the interval limit between two points")
     public void verifyingMarkTimeInterval(List<Mark> repoReturn, Boolean result){
