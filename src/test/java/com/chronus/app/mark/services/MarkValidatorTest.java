@@ -52,6 +52,7 @@ public class MarkValidatorTest {
 
         List<Mark> repoReturn = List.of(firstMark, secondMark, thirdMark);
         when(repositoryMock.getMarkByDate(currentMark)).thenReturn(repoReturn);
+        verify(repositoryMock, atLeast(1)).getMarkByDate(currentMark);
 
         assertThat(sut.isValidMarkInterval(currentMark)).isEqualTo(false);
     }
