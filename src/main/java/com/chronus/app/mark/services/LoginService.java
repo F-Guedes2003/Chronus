@@ -35,8 +35,7 @@ public class LoginService {
             }
             return new HttpResponse<>(401, "Wrong Password", user);
         }
-
-        return new HttpResponse<>(0, "", null);
+        return new HttpResponse<>(400, "User not Found", null);
     }
 
 }

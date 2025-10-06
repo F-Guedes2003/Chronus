@@ -30,7 +30,7 @@ class LoginServiceTest {
     public void shouldReturn200IfUserExists() {
         User loginUser = new User("Vitor Roque", "tigrinho", "vitorroque@palmeiras.com.br");
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<User>(200, "User logged in", loginUser));
+        assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<>(200, "User logged in", loginUser));
     }
 
     @Test
@@ -38,14 +38,14 @@ class LoginServiceTest {
     public void shouldReturn401IfPasswordWrong() {
         User loginUser = new User("Vitor Roque", "tigrinho1", "vitorroque@palmeiras.com.br");
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<User>(401, "Wrong Password", loginUser));
+        assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<>(401, "Wrong Password", loginUser));
     }
 
     @Test
     @DisplayName("Should return 400 if user not exists")
     public void shouldReturn400IfUserNotExists() {
-        User loginUser = new User("Vitor Roque", "tigrinho1", "vitorroque@palmeiras.com.br");
-        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
-        assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<User>(401, "Wrong Password", loginUser));
+        User loginUser = new User("Vitor Roque", "tigrinho1", "vitorroque2@palmeiras.com.br");
+        when(userRepository.findByEmail(loginUser.getEmail())).thenReturn(null);
+        assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<>(400, "User not Found", null));
     }
 }
