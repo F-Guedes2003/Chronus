@@ -33,6 +33,7 @@ public class LoginService {
             if (existingUser.getPassword().equals(user.getPassword())) {
                 return new HttpResponse<>(200, "User logged in", existingUser);
             }
+            return new HttpResponse<>(401, "Wrong Password", user);
         }
 
         return new HttpResponse<>(0, "", null);
