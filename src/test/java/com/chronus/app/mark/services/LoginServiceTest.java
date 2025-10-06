@@ -31,4 +31,13 @@ class LoginServiceTest {
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
         assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<User>(200, "User logged in", loginUser));
     }
+
+    @Test
+    @DisplayName("Should return 401 if the password is wrong")
+    public void shouldReturn401IfPasswordWrong(){
+        User loginUser = new User("Vitor Roque","tigrinho1","vitorroque@palmeiras.com.br");
+        User mockUser = new User("Vitor Roque","tigrinho","vitorroque@palmeiras.com.br");
+        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        assertThat(sut.login(loginUser)).isEqualTo(new HttpResponse<User>(401, "Wrong Password", loginUser));
+    }
 }
