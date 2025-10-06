@@ -1,5 +1,6 @@
 package com.chronus.app.mark.services;
 
+import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,9 @@ public class MarkValidator {
 
     public boolean isDateTimeAlreadyMarked(LocalDateTime dateTime) {
         return !repository.getMarkByMarkTime(dateTime).isEmpty();
+    }
+
+    public boolean isValidMarkInterval(Mark mark) {
+        return true;
     }
 }

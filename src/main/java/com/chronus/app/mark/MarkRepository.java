@@ -12,11 +12,16 @@ public interface MarkRepository extends JpaRepository<Mark, Integer> {
 
     List<Mark> findByMarkTimeBetween(LocalDateTime start, LocalDateTime end);
 
-    default List<Mark> getMarkByDate(LocalDateTime dateTime) {
+    default List<Mark> getMarkByDate(Mark mark) {
+        var dateTime = mark.getMarkTime();
+
         var date = dateTime.toLocalDate();
         var start = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
         var end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
 
-        return findByMarkTimeBetween(start, end);
+        return findByMarkTimeBetween(start, end)
+                .stream()
+                .filter(e -> (e.getUser() == mark.getUser()))
+                .toList();
     };
 }
