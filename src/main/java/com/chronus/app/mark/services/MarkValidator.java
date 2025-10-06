@@ -5,6 +5,8 @@ import com.chronus.app.mark.MarkRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MarkValidator {
@@ -21,6 +23,10 @@ public class MarkValidator {
     }
 
     public boolean isValidMarkInterval(Mark mark) {
-        return true;
+        List<Mark> dayMarks = repository.getMarkByDate(mark);
+
+        return dayMarks
+                .stream()
+                .anyMatch(e -> e.equals(mark));
     }
 }
