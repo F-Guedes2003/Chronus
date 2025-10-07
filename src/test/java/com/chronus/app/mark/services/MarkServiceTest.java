@@ -3,6 +3,7 @@ package com.chronus.app.mark.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.mark.services.MarkService;
@@ -85,5 +86,17 @@ public class MarkServiceTest {
         Mark mark = new Mark(user,dateTime);
         when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(mark));
         assertThat(sut.editMark(new Mark(user,dateTime))).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",mark));
+    }
+
+    @Test
+    @DisplayName("Editing mark with redundant entry type in list")
+    public void editingMarkRedundantEntryTypeInList(){
+        LocalDate date = LocalDate.of(2022,3,26);
+        LocalTime time = LocalTime.of(7,59);
+        LocalDateTime dateTime = LocalDateTime.of(date,time);
+        User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
+        Mark mark = new Mark(user,dateTime,true, MarkType.ENTRY);
+        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(mark));
+        assertThat(sut.editMark(new Mark(user,dateTime,true,MarkType.ENTRY))).isEqualTo(new HttpResponse<Mark>(400,"Already has a Entry Mark",mark));
     }
 }
