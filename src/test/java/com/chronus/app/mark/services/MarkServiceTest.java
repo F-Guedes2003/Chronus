@@ -59,4 +59,19 @@ public class MarkServiceTest {
         when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user, dateTime)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
     }
+
+    @Test
+    @DisplayName("Editing a inexistent mark")
+    public void editingAInexistentMark(){
+        LocalDate date = LocalDate.of(2022,3,25);
+        LocalTime time = LocalTime.of(9,30);
+        LocalDateTime dateTime = LocalDateTime.of(date,time);
+        User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
+
+        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user,dateTime)));
+        LocalDate inexistentDate = LocalDate.of(2022,3,25);
+        LocalTime inexistentTime = LocalTime.of(9,30);
+        LocalDateTime inexistentMark = LocalDateTime.of(inexistentDate,inexistentTime);
+        assertThat(sut.editMark(new Mark(user,inexistentMark))).isEqualTo(new HttpResponse<Mark>(400,"Inexistent mark for this user.",null));
+    }
 }

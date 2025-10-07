@@ -39,4 +39,7 @@ public class MarkService {
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
 
+    public HttpResponse<Mark> editMark(Mark mark){
+        return null;
+    }
 }
