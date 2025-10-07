@@ -36,6 +36,10 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "Already exists a mark to this date!", null);
         }
 
+        if(!validator.isValidMarkInterval(mark)) {
+            return new HttpResponse<Mark>(400, "So much time between Marks!", null);
+        }
+
         repository.save(mark);
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
