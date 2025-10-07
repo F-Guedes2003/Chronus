@@ -3,6 +3,7 @@ package com.chronus.app.mark.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.user.User;
@@ -69,5 +70,36 @@ public class MarkValidatorTest {
         when(repositoryMock.getMarkByDate(currentMark)).thenReturn(repoReturn);
         assertThat(sut.isValidMarkInterval(currentMark)).isEqualTo(result);
         verify(repositoryMock, atLeast(1)).getMarkByDate(currentMark);
+    }
+
+    static Stream<Arguments> markTypeProvider() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        LocalDate date = LocalDate.of(2025, 3, 12);
+        List<Mark> listOne = List.of(
+                new Mark(user, LocalDateTime.of(date, LocalTime.of(7, 25, 0)), true, MarkType.ENTRY),
+                new Mark(user, LocalDateTime.of(date, LocalTime.of(8, 10, 0)), true, MarkType.EXIT));
+
+        List<Mark> listTwo = List.of(
+                new Mark(user, LocalDateTime.of(date, LocalTime.of(7, 25, 0)), true, MarkType.ENTRY),
+                new Mark(user, LocalDateTime.of(date, LocalTime.of(7, 50, 0)), true, MarkType.EXIT),
+                new Mark(user, LocalDateTime.of(date, LocalTime.of(9, 1, 0)), true, MarkType.ENTRY));
+
+        return Stream.of(
+                Arguments.of(listOne, new Mark(user, LocalDateTime.of(date, LocalTime.of(7, 50, 0)), false, MarkType.ENTRY), Arguments.of(listTwo, true)),
+                Arguments.of());
+    }
+
+    @Test
+    @DisplayName("mark should be denied if there is a valid mark of the same type before it")
+    public void isValidMarkType() {
+        LocalDate date = LocalDate.of(2025, 3, 12);
+        var mark = new Mark(generalUser, LocalDateTime.of(date, LocalTime.of(7, 50, 0)), true, MarkType.ENTRY);
+        List<Mark> markList = List.of(
+                new Mark(generalUser, LocalDateTime.of(date, LocalTime.of(7, 25, 0)), true, MarkType.ENTRY),
+                new Mark(generalUser, LocalDateTime.of(date, LocalTime.of(8, 10, 0)), true, MarkType.EXIT));
+        when(repositoryMock.getMarkByDate(mark)).thenReturn(markList);
+
+
+        assertThat(sut.isValidMarkType);
     }
 }

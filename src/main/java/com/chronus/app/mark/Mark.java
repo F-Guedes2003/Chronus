@@ -27,6 +27,13 @@ public class Mark {
         this.isValid = true;
     }
 
+    public Mark (User user, LocalDateTime markTime, Boolean isValid, MarkType type) {
+        this.user = user;
+        this.markTime = markTime;
+        this.isValid = isValid;
+        this.type = type;
+    }
+
     public User getUser() {
         return user;
     }
