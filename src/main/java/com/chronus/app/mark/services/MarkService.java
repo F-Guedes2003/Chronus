@@ -39,7 +39,9 @@ public class MarkService {
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
 
-    public HttpResponse<Mark> editMark(Mark mark){
+    public HttpResponse<Mark> editMark(Mark mark) {
+        if (!repository.getMarkByMarkTime(mark.getMarkTime()).contains(mark))
+            return new HttpResponse<Mark>(400, "Inexistent mark for this user.", null);
         return null;
     }
 }
