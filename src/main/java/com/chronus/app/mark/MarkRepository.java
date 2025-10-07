@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface MarkRepository extends JpaRepository<Mark, Integer> {
     List<Mark> getMarkByMarkTime(LocalDateTime dateTime);
+    Mark getMarkByDateTime(LocalDateTime dateTime);
 
     List<Mark> findByMarkTimeBetween(LocalDateTime start, LocalDateTime end);
 

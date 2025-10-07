@@ -6,6 +6,7 @@ import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -40,8 +41,11 @@ public class MarkService {
     }
 
     public HttpResponse<Mark> editMark(Mark mark) {
-        if (!repository.getMarkByMarkTime(mark.getMarkTime()).contains(mark))
+        List<Mark> m = repository.getMarkByMarkTime(mark.getMarkTime());
+        if (!m.contains(mark))
             return new HttpResponse<Mark>(400, "Inexistent mark for this user.", null);
-        return null;
+        m.getFirst().setMarkTime(mark.getMarkTime());
+        repository.save(m.getFirst());
+        return new HttpResponse<Mark>(200,"Mark successfully edited",mark);
     }
 }
