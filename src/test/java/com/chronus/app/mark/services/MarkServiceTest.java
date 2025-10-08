@@ -9,11 +9,15 @@ import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.mark.services.MarkService;
 import com.chronus.app.user.User;
 import com.chronus.app.utils.HttpResponse;
+import jakarta.persistence.Entity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -88,15 +92,16 @@ public class MarkServiceTest {
         assertThat(sut.editMark(new Mark(user,dateTime))).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",mark));
     }
 
-    @Test
-    @DisplayName("Editing mark with redundant entry type in list")
-    public void editingMarkRedundantEntryTypeInList(){
+    @ParameterizedTest
+    @EnumSource(value = MarkType.class,names = {"ENTRY","EXIT"})
+    @DisplayName("Editing mark with redundant mark type in list")
+    public void editingMarkRedundantMarkTypeInList(MarkType mType){
         LocalDate date = LocalDate.of(2022,3,26);
         LocalTime time = LocalTime.of(7,59);
         LocalDateTime dateTime = LocalDateTime.of(date,time);
         User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark mark = new Mark(user,dateTime,true, MarkType.ENTRY);
+        Mark mark = new Mark(user,dateTime,true, mType);
         when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(mark));
-        assertThat(sut.editMark(new Mark(user,dateTime,true,MarkType.ENTRY))).isEqualTo(new HttpResponse<Mark>(400,"Already has a Entry Mark",mark));
+        assertThat(sut.editMark(new Mark(user,dateTime,true,mType))).isEqualTo(new HttpResponse<Mark>(400,"Already has the mark type for this day",mark));
     }
 }

@@ -50,7 +50,7 @@ public class MarkService {
         if (!m.contains(mark))
             return new HttpResponse<Mark>(400, "Inexistent mark for this user.", null);
         if(markToEdit.getMarkDate().equals(mark.getMarkDate()) && markToEdit.getType().equals(mark.getType()))
-            return new HttpResponse<Mark>(400,"Already has a Entry Mark",mark);
+            return new HttpResponse<Mark>(400,"Already has the mark type for this day",mark);
         markToEdit.setMarkTime(mark.getMarkTime());
         repository.save(markToEdit);
         return new HttpResponse<Mark>(200,"Mark successfully edited",mark);
