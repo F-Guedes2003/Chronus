@@ -4,6 +4,7 @@ import com.chronus.app.MarkType;
 import com.chronus.app.user.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,6 +41,10 @@ public class Mark {
 
     public LocalDateTime getMarkTime() {
         return markTime;
+    }
+
+    public LocalDate getMarkDate(){
+        return markTime.toLocalDate();
     }
 
     public void setMarkTime(LocalDateTime markTime) {
