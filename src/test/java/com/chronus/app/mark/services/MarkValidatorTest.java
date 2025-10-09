@@ -68,9 +68,9 @@ public class MarkValidatorTest {
     public void verifyingMarkTimeInterval(List<Mark> repoReturn, Boolean result){
         var currentMark = new Mark(generalUser, LocalTime.of(21, 0, 0), LocalDate.of(2025, 3, 12));
 
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(currentMark.getMarkTime(), currentMark.getMarkDate())).thenReturn(repoReturn);
+        when(repositoryMock.getMarksByMarkDate(currentMark.getMarkDate())).thenReturn(repoReturn);
         assertThat(sut.isValidMarkInterval(currentMark)).isEqualTo(result);
-        verify(repositoryMock, atLeast(1)).getMarkByMarkTimeAndMarkDate(currentMark.getMarkTime(), currentMark.getMarkDate());
+        verify(repositoryMock, atLeast(1)).getMarksByMarkDate(currentMark.getMarkDate());
     }
 
     static Stream<Arguments> markTypeProvider() {
