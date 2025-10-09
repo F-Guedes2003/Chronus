@@ -4,7 +4,9 @@ import com.chronus.app.MarkType;
 import com.chronus.app.user.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "marks")
@@ -15,19 +17,20 @@ public class Mark {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private LocalDateTime markTime;
+    private LocalTime markTime;
+    private LocalDate markDate;
     private Boolean isValid;
     private MarkType type;
 
     public Mark() {}
 
-    public Mark (User user, LocalDateTime markTime) {
+    public Mark (User user, LocalTime markTime, LocalDate markDate) {
         this.user = user;
         this.markTime = markTime;
         this.isValid = true;
     }
 
-    public Mark (User user, LocalDateTime markTime, Boolean isValid, MarkType type) {
+    public Mark (User user, LocalTime markTime, LocalDate markDate, Boolean isValid, MarkType type) {
         this.user = user;
         this.markTime = markTime;
         this.isValid = isValid;
@@ -38,12 +41,20 @@ public class Mark {
         return user;
     }
 
-    public LocalDateTime getMarkTime() {
+    public LocalTime getMarkTime() {
         return markTime;
     }
 
-    public void setMarkTime(LocalDateTime markTime) {
+    public void setMarkTime(LocalTime markTime) {
         this.markTime = markTime;
+    }
+
+    public LocalDate getMarkDate() {
+        return markDate;
+    }
+
+    public void setMarkDate(LocalDate markDate) {
+        this.markDate = markDate;
     }
 
     public Boolean getValid() {

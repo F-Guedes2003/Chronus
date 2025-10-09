@@ -37,12 +37,11 @@ public class MarkServiceTest {
     @DisplayName("Adding a mark to a user")
     public void addingANewMarkTest() {
         LocalDate date = LocalDate.of(2022, 3, 22);
-        LocalTime time = LocalTime.of(8, 25);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, LocalDateTime.of(date, time));
-        List<Mark> mockReturn = List.of(new Mark(user, LocalDateTime.of(2025, 3, 12, 7, 25, 0)),
-                new Mark(user, LocalDateTime.of(2025, 3, 12, 7, 50, 0)),
-                new Mark(user, LocalDateTime.of(2025, 3, 12, 9, 1, 0)));
+        Mark mark = new Mark(user, LocalTime.of(8, 25), date);
+        List<Mark> mockReturn = List.of(new Mark(user, LocalTime.of(7, 25, 0), date),
+                new Mark(user, LocalTime.of(7, 50, 0), date),
+                new Mark(user, LocalTime.of(9, 1, 0), date));
 
         when(repositoryMock.save(mark)).thenReturn(mark);
         when(repositoryMock.getMarkByDate(mark)).thenReturn(mockReturn);
@@ -58,9 +57,9 @@ public class MarkServiceTest {
         LocalTime time = LocalTime.of(8, 25);
         LocalDateTime dateTime = LocalDateTime.of(date, time);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, dateTime);
+        Mark mark = new Mark(user, time, date);
 
-        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user, dateTime)));
+        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user, time, date)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
     }
 }
