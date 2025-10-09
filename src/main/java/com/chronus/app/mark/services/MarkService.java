@@ -31,7 +31,7 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "User field must not be empty!", null);
         }
 
-        if(validator.isDateTimeAlreadyMarked(mark.getMarkTime())){
+        if(validator.isDateTimeAlreadyMarked(mark)){
             return new HttpResponse<Mark>(400, "Already exists a mark to this date!", null);
         }
 

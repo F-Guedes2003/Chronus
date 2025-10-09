@@ -43,9 +43,9 @@ public class MarkValidatorTest {
     public void verifyingIfADateTimeIsMarked() {
         var dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
         var mark  = new Mark(new User("Flaco López", "password", "flaquitomatador@sep.com"), LocalTime.now(), LocalDate.now());
-        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(mark));
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of(mark));
 
-        assertThat(sut.isDateTimeAlreadyMarked(dateTime)).isEqualTo(true);
+        assertThat(sut.isDateTimeAlreadyMarked(mark)).isEqualTo(true);
     }
 
     static Stream<Arguments> marksProvider() {
@@ -68,9 +68,9 @@ public class MarkValidatorTest {
     public void verifyingMarkTimeInterval(List<Mark> repoReturn, Boolean result){
         var currentMark = new Mark(generalUser, LocalTime.of(21, 0, 0), LocalDate.of(2025, 3, 12));
 
-        when(repositoryMock.getMarkByDate(currentMark)).thenReturn(repoReturn);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(currentMark.getMarkTime(), currentMark.getMarkDate())).thenReturn(repoReturn);
         assertThat(sut.isValidMarkInterval(currentMark)).isEqualTo(result);
-        verify(repositoryMock, atLeast(1)).getMarkByDate(currentMark);
+        verify(repositoryMock, atLeast(1)).getMarkByMarkTimeAndMarkDate(currentMark.getMarkTime(), currentMark.getMarkDate());
     }
 
     static Stream<Arguments> markTypeProvider() {
@@ -98,9 +98,6 @@ public class MarkValidatorTest {
         List<Mark> markList = List.of(
                 new Mark(generalUser, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
                 new Mark(generalUser, LocalTime.of(8, 10, 0), date, true, MarkType.EXIT));
-        when(repositoryMock.getMarkByDate(mark)).thenReturn(markList);
-
-
-        assertThat(sut.isValidMarkType);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(markList);
     }
 }

@@ -44,7 +44,7 @@ public class MarkServiceTest {
                 new Mark(user, LocalTime.of(9, 1, 0), date));
 
         when(repositoryMock.save(mark)).thenReturn(mark);
-        when(repositoryMock.getMarkByDate(mark)).thenReturn(mockReturn);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(mockReturn);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(201, "Mark added with success!", mark));
 
         verify(repositoryMock, atLeast(1)).save(mark);
@@ -59,7 +59,7 @@ public class MarkServiceTest {
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
         Mark mark = new Mark(user, time, date);
 
-        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user, time, date)));
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of(new Mark(user, time, date)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
     }
 }
