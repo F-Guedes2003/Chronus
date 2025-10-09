@@ -42,15 +42,11 @@ public class MarkServiceTest {
     @DisplayName("Adding a mark to a user")
     public void addingANewMarkTest() {
         LocalDate date = LocalDate.of(2022, 3, 22);
-        LocalTime time = LocalTime.of(8, 25);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, LocalDateTime.of(date, time));
-        List<Mark> mockReturn = List.of(new Mark(user, LocalDateTime.of(2025, 3, 12, 7, 25, 0)),
-                new Mark(user, LocalDateTime.of(2025, 3, 12, 7, 50, 0)),
-                new Mark(user, LocalDateTime.of(2025, 3, 12, 9, 1, 0)));
+        Mark mark = new Mark(user, LocalTime.of(8, 25), date);
 
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of());
         when(repositoryMock.save(mark)).thenReturn(mark);
-        when(repositoryMock.getMarkByDate(mark)).thenReturn(mockReturn);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(201, "Mark added with success!", mark));
 
         verify(repositoryMock, atLeast(1)).save(mark);
@@ -63,9 +59,9 @@ public class MarkServiceTest {
         LocalTime time = LocalTime.of(8, 25);
         LocalDateTime dateTime = LocalDateTime.of(date, time);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, dateTime);
+        Mark mark = new Mark(user, time, date);
 
-        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(new Mark(user, dateTime)));
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of(new Mark(user, time, date)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
     }
 
@@ -74,10 +70,9 @@ public class MarkServiceTest {
     public void editingAInexistentMark(){
         LocalDate inexistentDate = LocalDate.of(2022,3,28);
         LocalTime inexistentTime = LocalTime.of(10,30);
-        LocalDateTime inexistentMark = LocalDateTime.of(inexistentDate,inexistentTime);
         User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        when(repositoryMock.getMarkByMarkTime(inexistentMark)).thenReturn(List.of());
-        assertThat(sut.editMark(new Mark(user,inexistentMark))).isEqualTo(new HttpResponse<Mark>(400,"Inexistent mark for this user.",null));
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(inexistentTime,inexistentDate)).thenReturn(List.of());
+        assertThat(sut.editMark(new Mark(user,inexistentTime,inexistentDate))).isEqualTo(new HttpResponse<Mark>(400,"Inexistent mark for this user.",null));
     }
 
     @Test
@@ -85,11 +80,10 @@ public class MarkServiceTest {
     public void editingValidMark(){
         LocalDate date = LocalDate.of(2022,3,26);
         LocalTime time = LocalTime.of(7,59);
-        LocalDateTime dateTime = LocalDateTime.of(date,time);
         User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark mark = new Mark(user,dateTime);
-        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(mark));
-        assertThat(sut.editMark(new Mark(user,dateTime))).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",mark));
+        Mark mark = new Mark(user,time,date);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(time,date)).thenReturn(List.of(mark));
+        assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",mark));
     }
 
     @ParameterizedTest
@@ -100,8 +94,8 @@ public class MarkServiceTest {
         LocalTime time = LocalTime.of(7,59);
         LocalDateTime dateTime = LocalDateTime.of(date,time);
         User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark mark = new Mark(user,dateTime,true, mType);
-        when(repositoryMock.getMarkByMarkTime(dateTime)).thenReturn(List.of(mark));
-        assertThat(sut.editMark(new Mark(user,dateTime,true,mType))).isEqualTo(new HttpResponse<Mark>(400,"Already has the mark type for this day",mark));
+        Mark mark = new Mark(user,time,date,true, mType);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(time,date)).thenReturn(List.of(mark));
+        assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(400,"Already has the mark type for this day",mark));
     }
 }

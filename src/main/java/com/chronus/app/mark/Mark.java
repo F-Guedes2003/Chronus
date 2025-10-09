@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "marks")
@@ -16,21 +17,24 @@ public class Mark {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private LocalDateTime markTime;
+    private LocalTime markTime;
+    private LocalDate markDate;
     private Boolean isValid;
     private MarkType type;
 
     public Mark() {}
 
-    public Mark (User user, LocalDateTime markTime) {
+    public Mark (User user, LocalTime markTime, LocalDate markDate) {
         this.user = user;
         this.markTime = markTime;
+        this.markDate = markDate;
         this.isValid = true;
     }
 
-    public Mark (User user, LocalDateTime markTime, Boolean isValid, MarkType type) {
+    public Mark (User user, LocalTime markTime, LocalDate markDate, Boolean isValid, MarkType type) {
         this.user = user;
         this.markTime = markTime;
+        this.markDate = markDate;
         this.isValid = isValid;
         this.type = type;
     }
@@ -39,16 +43,20 @@ public class Mark {
         return user;
     }
 
-    public LocalDateTime getMarkTime() {
+    public LocalTime getMarkTime() {
         return markTime;
     }
 
-    public LocalDate getMarkDate(){
-        return markTime.toLocalDate();
+    public void setMarkTime(LocalTime markTime) {
+        this.markTime = markTime;
     }
 
-    public void setMarkTime(LocalDateTime markTime) {
-        this.markTime = markTime;
+    public LocalDate getMarkDate() {
+        return markDate;
+    }
+
+    public void setMarkDate(LocalDate markDate) {
+        this.markDate = markDate;
     }
 
     public Boolean getValid() {
@@ -85,5 +93,10 @@ public class Mark {
     @Override
     public int hashCode() {
         return java.util.Objects.hash(user, markTime, isValid);
+    }
+
+    @Override
+    public String toString() {
+        return "User: " + user + " | Mark time: " + markTime + " | Mark Date: " + markDate + " | isValid: " + isValid + " | type: " + type;
     }
 }

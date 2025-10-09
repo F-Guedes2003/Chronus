@@ -5,6 +5,7 @@ import com.chronus.app.mark.MarkRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,12 +21,15 @@ public class MarkValidator {
         this.repository = repository;
     }
 
-    public boolean isDateTimeAlreadyMarked(LocalDateTime dateTime) {
-        return !repository.getMarkByMarkTime(dateTime).isEmpty();
+    public boolean isDateTimeAlreadyMarked(Mark mark) {
+
+        return !repository.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate()).isEmpty();
     }
 
     public boolean isValidMarkInterval(Mark mark) {
-        List<Mark> dayMarks = repository.getMarkByDate(mark);
+        List<Mark> dayMarks = repository.getMarksByMarkDate(mark.getMarkDate());
+
+        if (dayMarks.isEmpty()) return true;
 
         Mark lastMark = dayMarks.stream()
                 .sorted(Comparator.comparing(Mark::getMarkTime))

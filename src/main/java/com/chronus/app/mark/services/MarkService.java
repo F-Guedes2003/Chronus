@@ -32,7 +32,7 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "User field must not be empty!", null);
         }
 
-        if(validator.isDateTimeAlreadyMarked(mark.getMarkTime())){
+        if(validator.isDateTimeAlreadyMarked(mark)){
             return new HttpResponse<Mark>(400, "Already exists a mark to this date!", null);
         }
 
@@ -45,7 +45,7 @@ public class MarkService {
     }
 
     public HttpResponse<Mark> editMark(Mark mark) {
-        List<Mark> m = repository.getMarkByMarkTime(mark.getMarkTime());
+        List<Mark> m = repository.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(),mark.getMarkDate());
         Mark markToEdit = m.getFirst();
         if (!m.contains(mark))
             return new HttpResponse<Mark>(400, "Inexistent mark for this user.", null);
