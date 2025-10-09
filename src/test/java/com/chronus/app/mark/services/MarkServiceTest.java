@@ -39,12 +39,9 @@ public class MarkServiceTest {
         LocalDate date = LocalDate.of(2022, 3, 22);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
         Mark mark = new Mark(user, LocalTime.of(8, 25), date);
-        List<Mark> mockReturn = List.of(new Mark(user, LocalTime.of(7, 25, 0), date),
-                new Mark(user, LocalTime.of(7, 50, 0), date),
-                new Mark(user, LocalTime.of(9, 1, 0), date));
 
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of());
         when(repositoryMock.save(mark)).thenReturn(mark);
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(mockReturn);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(201, "Mark added with success!", mark));
 
         verify(repositoryMock, atLeast(1)).save(mark);

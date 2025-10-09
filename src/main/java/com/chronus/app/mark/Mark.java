@@ -27,12 +27,14 @@ public class Mark {
     public Mark (User user, LocalTime markTime, LocalDate markDate) {
         this.user = user;
         this.markTime = markTime;
+        this.markDate = markDate;
         this.isValid = true;
     }
 
     public Mark (User user, LocalTime markTime, LocalDate markDate, Boolean isValid, MarkType type) {
         this.user = user;
         this.markTime = markTime;
+        this.markDate = markDate;
         this.isValid = isValid;
         this.type = type;
     }
@@ -91,5 +93,10 @@ public class Mark {
     @Override
     public int hashCode() {
         return java.util.Objects.hash(user, markTime, isValid);
+    }
+
+    @Override
+    public String toString() {
+        return "User: " + user + " | Mark time: " + markTime + " | Mark Date: " + markDate + " | isValid: " + isValid + " | type: " + type;
     }
 }

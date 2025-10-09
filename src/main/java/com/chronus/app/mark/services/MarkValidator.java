@@ -29,6 +29,8 @@ public class MarkValidator {
     public boolean isValidMarkInterval(Mark mark) {
         List<Mark> dayMarks = repository.getMarksByMarkDate(mark.getMarkDate());
 
+        if (dayMarks.isEmpty()) return true;
+
         Mark lastMark = dayMarks.stream()
                 .sorted(Comparator.comparing(Mark::getMarkTime))
                 .toList()
