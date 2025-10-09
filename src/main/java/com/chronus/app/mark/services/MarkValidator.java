@@ -38,4 +38,10 @@ public class MarkValidator {
 
         return Duration.between(lastMark.getMarkTime(), mark.getMarkTime()).toHours() < 12;
     }
+
+    public boolean isValidMarkType(Mark mark) {
+        var dayMarks = repository.getMarksByMarkDate(mark.getMarkDate());
+
+        return dayMarks.getLast().getType() != mark.getType();
+    }
 }

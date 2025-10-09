@@ -93,10 +93,12 @@ public class MarkValidatorTest {
     @DisplayName("mark should be denied if there is a valid mark of the same type before it")
     public void isValidMarkType() {
         LocalDate date = LocalDate.of(2025, 3, 12);
-        var mark = new Mark(generalUser, LocalTime.of(7, 50, 0), date, true, MarkType.ENTRY);
+        var mark = new Mark(generalUser, LocalTime.of(8, 50, 0), date, true, MarkType.EXIT);
         List<Mark> markList = List.of(
                 new Mark(generalUser, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
                 new Mark(generalUser, LocalTime.of(8, 10, 0), date, true, MarkType.EXIT));
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(markList);
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(markList);
+
+        assertThat(sut.isValidMarkType(mark)).isEqualTo(false);
     }
 }
