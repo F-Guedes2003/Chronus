@@ -89,7 +89,7 @@ public class MarkValidatorTest {
                 Arguments.of());
     }
 
-    static Stream<Arguments> marksTypeProvider() {
+    static Stream<Arguments> marksTypeProviderOfValidNeighbours() {
         User user = new User("Flaco López", "password", "Flaquito Matador");
         var date = LocalDate.of(2025, 3, 12);
         return Stream.of(
@@ -111,7 +111,22 @@ public class MarkValidatorTest {
                                 new Mark(user, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
                                 new Mark(user, LocalTime.of(8, 10, 0), date, true, MarkType.EXIT),
                                 new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.EXIT)),
-                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false));
+    }
+
+    @ParameterizedTest(name = "{index} - should return {2}")
+    @MethodSource("marksTypeProviderOfValidNeighbours")
+    @DisplayName("mark should be denied if there is a valid mark of the same type before or after it")
+    public void isValidMarkTypeBetweenValidElements(List<Mark> markList, Mark mark, Boolean result) {
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(markList);
+
+        assertThat(sut.isValidMarkType(mark)).isEqualTo(result);
+    }
+
+    static Stream<Arguments> marksTypeProviderOfInvalidNeighbours() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        var date = LocalDate.of(2025, 3, 12);
+        return Stream.of(
                 Arguments.of(List.of(
                                 new Mark(user, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
                                 new Mark(user, LocalTime.of(8, 10, 0), date, false, MarkType.EXIT),
@@ -124,10 +139,10 @@ public class MarkValidatorTest {
                         new Mark(user, LocalTime.of(7, 40, 0), date, true, MarkType.EXIT), true));
     }
 
-    @ParameterizedTest()
-    @MethodSource("marksTypeProvider")
-    @DisplayName("[{index}] - mark should be denied if there is a valid mark of the same type before it")
-    public void isValidMarkType(List<Mark> markList, Mark mark, Boolean result) {
+    @ParameterizedTest(name = "{index} - should return {2}")
+    @MethodSource("marksTypeProviderOfInvalidNeighbours")
+    @DisplayName("mark should be allowed if there is an invalid mark of the same type before or after it")
+    public void isValidMarkTypeBetweenInvalidElements(List<Mark> markList, Mark mark, Boolean result) {
         when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(markList);
 
         assertThat(sut.isValidMarkType(mark)).isEqualTo(result);
