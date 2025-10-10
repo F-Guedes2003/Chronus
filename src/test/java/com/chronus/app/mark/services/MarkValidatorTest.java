@@ -152,4 +152,16 @@ public class MarkValidatorTest {
 
         assertThat(sut.isValidMarkType(mark)).isEqualTo(result);
     }
+
+    @Test
+    @DisplayName("should not be able to insert an exit mark before the first mark of the day")
+    public void cannotInsertAnExitMarkBeforeTheFirstMarkOfTheDay() {
+        LocalDate date = LocalDate.of(2025, 3, 12);
+        Mark firstMarkOfTheDay = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
+        Mark mark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.EXIT);
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
+                .thenReturn(List.of(firstMarkOfTheDay));
+
+        assertThat(sut.isValidMarkType(mark)).isFalse();
+    }
 }
