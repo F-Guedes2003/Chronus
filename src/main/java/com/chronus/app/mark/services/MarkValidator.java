@@ -1,5 +1,6 @@
 package com.chronus.app.mark.services;
 
+import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import org.springframework.stereotype.Service;
@@ -62,8 +63,9 @@ public class MarkValidator {
       para aí sim fazer a verificação para poupar recursos e latencia de aacesso ao banco*/
     private boolean isExitMarkBeforeFirstMarkOfTheDay(Mark firstMarkOfTheDay, Mark mark) {
 
-
-        return false;
+        return (mark.getType() == MarkType.EXIT
+                &&
+                (!mark.getMarkTime().isAfter(firstMarkOfTheDay.getMarkTime())));
     }
 
     public boolean isValidMarkType(Mark mark) {
@@ -72,7 +74,11 @@ public class MarkValidator {
                 .sorted(Comparator.comparing(Mark::getMarkTime))
                 .toList();
 
+        if(dayMarks.isEmpty()) return true;
+
         int markIndex = findMarkIndex(dayMarks, mark);
+
+        if(isExitMarkBeforeFirstMarkOfTheDay(dayMarks.getFirst(), mark)) return false;
 
         if(markIndex == dayMarks.size()) return (dayMarks.getLast().getValid() != mark.getValid() || dayMarks.getLast().getType() != mark.getType());
 
