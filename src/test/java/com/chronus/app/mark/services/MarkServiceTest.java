@@ -3,6 +3,7 @@ package com.chronus.app.mark.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.mark.services.MarkService;
@@ -58,5 +59,18 @@ public class MarkServiceTest {
 
         when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of(new Mark(user, time, date)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
+    }
+
+    @Test
+    @DisplayName("Adding a new mark exit before the first Entry mark of the day")
+    public void addingANewMarkBeforeTheFirstMarkOfTheDay() {
+        LocalDate date = LocalDate.of(2022, 3, 22);;
+        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
+        Mark mark = new Mark(user, LocalTime.of(8, 20), date, true, MarkType.ENTRY);
+
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
+                .thenReturn(List.of(new Mark(user, LocalTime.of(8, 25), date, true, MarkType.EXIT)));
+
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Invalid Mark Type!", null));
     }
 }

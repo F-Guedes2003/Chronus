@@ -40,7 +40,7 @@ public class MarkService {
         }
 
         if(!validator.isValidMarkType(mark)) {
-            return new HttpResponse<Mark>(400, "So much time between Marks!", null);
+            return new HttpResponse<Mark>(400, "Invalid Mark Type!", null);
         }
 
         repository.save(mark);
