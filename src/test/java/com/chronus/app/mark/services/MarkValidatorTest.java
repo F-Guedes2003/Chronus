@@ -153,15 +153,27 @@ public class MarkValidatorTest {
         assertThat(sut.isValidMarkType(mark)).isEqualTo(result);
     }
 
-    @Test
+    static Stream<Arguments> marksBeforeOrAtFirstMarkOfTheDayProvider() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        var date = LocalDate.of(2025, 3, 12);
+
+        return Stream.of(Arguments.of(
+                new Mark(user, LocalTime.of(9, 0, 0), date, true, MarkType.EXIT), false),
+                Arguments.of(
+                        new Mark(user, LocalTime.of(8, 59, 0), date, true, MarkType.EXIT), false),
+                Arguments.of(
+                        new Mark(user, LocalTime.of(9, 51, 0), date, true, MarkType.EXIT), true));
+    }
+
+    @ParameterizedTest(name = "{1} - should return {1}")
+    @MethodSource("marksBeforeOrAtFirstMarkOfTheDayProvider")
     @DisplayName("should not be able to insert an exit mark before the first mark of the day")
-    public void cannotInsertAnExitMarkBeforeTheFirstMarkOfTheDay() {
+    public void cannotInsertAnExitMarkBeforeTheFirstMarkOfTheDay(Mark newMark, Boolean result) {
         LocalDate date = LocalDate.of(2025, 3, 12);
         Mark firstMarkOfTheDay = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
-        Mark mark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.EXIT);
-        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
+        when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate()))
                 .thenReturn(List.of(firstMarkOfTheDay));
 
-        assertThat(sut.isValidMarkType(mark)).isFalse();
+        assertThat(sut.isValidMarkType(newMark)).isEqualTo(result);
     }
 }
