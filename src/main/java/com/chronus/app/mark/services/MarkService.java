@@ -46,10 +46,11 @@ public class MarkService {
 
     public HttpResponse<Mark> editMark(Mark mark) {
         List<Mark> m = repository.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(),mark.getMarkDate());
-        Mark markToEdit = m.getFirst();
         if (!m.contains(mark))
             return new HttpResponse<Mark>(400, "Inexistent mark for this user.", null);
-        if(markToEdit.getMarkDate().equals(mark.getMarkDate()) && markToEdit.getType().equals(mark.getType()))
+        Mark markToEdit = m.getFirst();
+        System.out.println(repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()));
+        if(markToEdit.equals(mark) && repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()))
             return new HttpResponse<Mark>(400,"Already has the mark type for this day",null);
         markToEdit.setMarkTime(mark.getMarkTime());
         repository.save(markToEdit);
