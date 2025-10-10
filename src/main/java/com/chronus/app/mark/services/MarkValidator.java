@@ -62,7 +62,7 @@ public class MarkValidator {
         var dayMarks = repository.getMarksByMarkDate(mark.getMarkDate());
         int markIndex = findMarkIndex(dayMarks, mark);
 
-        if(markIndex == dayMarks.size()) return dayMarks.getLast().getType() != mark.getType();
+        if(markIndex == dayMarks.size()) return (dayMarks.getLast().getValid() != mark.getValid() || dayMarks.getLast().getType() != mark.getType());
 
         return (!dayMarks.get(markIndex).getValid() || dayMarks.get(markIndex).getType() != mark.getType())
                 &&
