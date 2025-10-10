@@ -58,8 +58,20 @@ public class MarkValidator {
         return Duration.between(lastMark.getMarkTime(), mark.getMarkTime()).toHours() < 12;
     }
 
+    /*Não foi feito um método que recebe a marcação e busca no banco todas as marcações do dia
+      para aí sim fazer a verificação para poupar recursos e latencia de aacesso ao banco*/
+    private boolean isExitMarkBeforeFirstMarkOfTheDay(Mark firstMarkOfTheDay, Mark mark) {
+
+
+        return false;
+    }
+
     public boolean isValidMarkType(Mark mark) {
-        var dayMarks = repository.getMarksByMarkDate(mark.getMarkDate());
+        var dayMarks = repository.getMarksByMarkDate(mark.getMarkDate())
+                .stream()
+                .sorted(Comparator.comparing(Mark::getMarkTime))
+                .toList();
+
         int markIndex = findMarkIndex(dayMarks, mark);
 
         if(markIndex == dayMarks.size()) return (dayMarks.getLast().getValid() != mark.getValid() || dayMarks.getLast().getType() != mark.getType());
