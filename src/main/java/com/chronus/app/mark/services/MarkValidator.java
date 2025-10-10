@@ -64,8 +64,6 @@ public class MarkValidator {
 
         if(markIndex == dayMarks.size()) return dayMarks.getLast().getType() != mark.getType();
 
-        if(dayMarks.get(markIndex).getType() == mark.getType()) return false;
-
-        return false;
+        return dayMarks.get(markIndex).getType() != mark.getType();
     }
 }
