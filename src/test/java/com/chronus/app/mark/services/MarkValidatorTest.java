@@ -106,6 +106,11 @@ public class MarkValidatorTest {
                                 new Mark(user, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
                                 new Mark(user, LocalTime.of(8, 10, 0), date, true, MarkType.EXIT),
                                 new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.ENTRY)),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false),
+                Arguments.of(List.of(
+                                new Mark(user, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(8, 10, 0), date, true, MarkType.EXIT),
+                                new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.ENTRY)),
                         new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false));
     }
 
@@ -115,6 +120,6 @@ public class MarkValidatorTest {
     public void isValidMarkType(List<Mark> markList, Mark mark, Boolean result) {
         when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(markList);
 
-        assertThat(sut.isValidMarkType(mark)).isEqualTo(false);
+        assertThat(sut.isValidMarkType(mark)).isEqualTo(result);
     }
 }
