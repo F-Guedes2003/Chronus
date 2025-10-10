@@ -22,7 +22,7 @@ public class MarkValidator {
         this.repository = repository;
     }
 
-    public int findMarkIndex(List<Mark> dayMarks, Mark mark) {
+    private int findMarkIndex(List<Mark> dayMarks, Mark mark) {
         int low = 0;
         int high = dayMarks.size() - 1;
 
