@@ -111,7 +111,12 @@ public class MarkValidatorTest {
                                 new Mark(user, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
                                 new Mark(user, LocalTime.of(8, 10, 0), date, true, MarkType.EXIT),
                                 new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.EXIT)),
-                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false));
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false),
+                Arguments.of(List.of(
+                                new Mark(user, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(8, 10, 0), date, false, MarkType.EXIT),
+                                new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.ENTRY)),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true));
     }
 
     @ParameterizedTest()
