@@ -213,4 +213,26 @@ public class MarkValidatorTest {
 
         assertThat(sut.isExitMarkWithoutEntry(newMark)).isEqualTo(result);
     }
+
+    static Stream<Arguments> futureMarkProvider() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        var date = LocalDate.of(2025, 3, 12);
+
+        return Stream.of(Arguments.of(LocalDate.of(2025, 3, 13),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true),
+
+                Arguments.of(LocalDate.of(2025, 3, 12),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), false),
+
+                Arguments.of(LocalDate.of(2025, 3, 11),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), false));
+    }
+
+    @ParameterizedTest(name = "{index} - marks should return {2}")
+    @MethodSource("futureMarkProvider")
+    @DisplayName("should not be able to insert a mark to a future date")
+    public void verofyingFutureMark(LocalDate today, Mark mark, Boolean result) {
+
+        assertThat(sut.isFutureMark(today, mark)).isEqualTo(result);
+    }
 }

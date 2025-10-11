@@ -103,4 +103,8 @@ public class MarkValidator {
                         (e.getType() == MarkType.ENTRY && e.getValid())
                 );
     }
+
+    public boolean isFutureMark(LocalDate today, Mark mark) {
+        return false;
+    }
 }
