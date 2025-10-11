@@ -1,5 +1,6 @@
 package com.chronus.app.mark.services;
 
+import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.utils.HttpResponse;
@@ -57,15 +58,24 @@ public class MarkService {
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
 
-    public HttpResponse<Mark> editMark(Mark mark) {
+    public HttpResponse<Mark> editMark(Mark mark, Mark editedMark) {
         List<Mark> m = repository.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(),mark.getMarkDate());
+        Mark entryMark = repository.getMarkByTypeAndDate(MarkType.ENTRY,mark.getMarkDate());
+        Mark exitMark = repository.getMarkByTypeAndDate(MarkType.EXIT,mark.getMarkDate());
+
         if (!m.contains(mark))
             return new HttpResponse<Mark>(400, "Inexistent mark for this user.", null);
+
         Mark markToEdit = m.getFirst();
-        System.out.println(repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()));
+
         if(markToEdit.equals(mark) && repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()))
             return new HttpResponse<Mark>(400,"Already has the mark type for this day",null);
-        markToEdit.setMarkTime(mark.getMarkTime());
+
+        if(editedMark.getMarkTime().isAfter(exitMark.getMarkTime()) && editedMark.getType().equals(MarkType.ENTRY))
+            return new HttpResponse<Mark>(400, "Entry mark cannot be after an exit mark.", null);
+
+        markToEdit.setMarkTime(editedMark.getMarkTime());
+        markToEdit.setType(editedMark.getType());
         repository.save(markToEdit);
         return new HttpResponse<Mark>(200,"Mark successfully edited",mark);
     }
