@@ -93,6 +93,8 @@ public class MarkValidator {
     public boolean isExitMarkWithoutEntry(Mark mark){
         List<Mark> dayMarks = repository.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate());
 
+        if (mark.getType() == MarkType.ENTRY) return false;
+
         return dayMarks.isEmpty();
     }
 }

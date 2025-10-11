@@ -194,7 +194,7 @@ public class MarkValidatorTest {
                         new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true));
     }
 
-    @ParameterizedTest(name = "{1} - {0} marks should return {1}")
+    @ParameterizedTest(name = "{index} - marks should return {2}")
     @MethodSource("exitMarksWithoutEntryProvider")
     @DisplayName("should not be able to insert an exit mark without an entry mark")
     public void cannotInsertAnExitMarkwithoutAnEntry(List<Mark> markList, Mark newMark, Boolean result) {
