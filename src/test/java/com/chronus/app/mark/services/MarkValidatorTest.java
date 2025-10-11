@@ -183,7 +183,12 @@ public class MarkValidatorTest {
 
         return Stream.of(Arguments.of(
                 List.of(),
-                new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true));
+                new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true),
+                Arguments.of(
+                        List.of(
+                                new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY)
+                        ),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true));
     }
 
     @ParameterizedTest(name = "{1} - {0} marks should return {1}")
