@@ -29,13 +29,13 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MarkValidatorTest {
-    MarkValidator sut = new MarkValidator();
+    MarkValidator sut;
     User generalUser = new User("Flaco López", "password", "Flaquito Matador");
     @Mock MarkRepository repositoryMock;
 
     @BeforeEach
     public void setup() {
-        sut.repository = repositoryMock;
+        sut = new MarkValidator(repositoryMock);
     }
 
     @Test

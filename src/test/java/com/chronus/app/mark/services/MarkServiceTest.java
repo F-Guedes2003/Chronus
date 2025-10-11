@@ -34,8 +34,7 @@ public class MarkServiceTest {
     @BeforeEach
     public void setup() {
         sut.repository = repositoryMock;
-        sut.validator = new MarkValidator();
-        sut.validator.repository = repositoryMock;
+        sut.validator = new MarkValidator(repositoryMock);
     }
 
     @Test
