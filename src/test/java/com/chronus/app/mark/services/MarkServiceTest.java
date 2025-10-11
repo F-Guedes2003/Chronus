@@ -126,4 +126,18 @@ public class MarkServiceTest {
         when(repositoryMock.existsByTypeAndDate(mType, date)).thenReturn(true);
         assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(400,"Already has the mark type for this day",null));
     }
+
+    @Test
+    @DisplayName("Adding a mark that goes beyond 12 hours")
+    public void addingANewMarkThatGoesBeyondMarkInterval() {
+        LocalDate date = LocalDate.of(2022, 3, 22);
+        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
+        Mark mark = new Mark(user, LocalTime.of(21, 0), date);
+
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
+                .thenReturn(List.of(new Mark(user, LocalTime.of(9, 0), date)));
+
+        assertThat(sut.addNewMark(mark))
+                .isEqualTo(new HttpResponse<Mark>(400, "So much time between Marks!", null));
+    }
 }
