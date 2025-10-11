@@ -97,8 +97,8 @@ public class MarkValidator {
 
         if (dayMarks.isEmpty()) return true;
 
-        return dayMarks
+        return (dayMarks
                 .stream()
-                .anyMatch(e -> (e.getType() == MarkType.ENTRY));
+                .noneMatch(e -> (e.getType() == MarkType.ENTRY)));
     }
 }

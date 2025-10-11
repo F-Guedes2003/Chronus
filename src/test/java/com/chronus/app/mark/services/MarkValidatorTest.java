@@ -181,17 +181,14 @@ public class MarkValidatorTest {
         User user = new User("Flaco López", "password", "Flaquito Matador");
         var date = LocalDate.of(2025, 3, 12);
 
-        return Stream.of(Arguments.of(
-                List.of(),
+        return Stream.of(Arguments.of(List.of(),
                 new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true),
-                Arguments.of(
-                        List.of(),
+                Arguments.of(List.of(),
                         new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), false),
-                Arguments.of(
-                        List.of(
+                Arguments.of(List.of(
                                 new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY)
                         ),
-                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true));
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false));
     }
 
     @ParameterizedTest(name = "{index} - marks should return {2}")
