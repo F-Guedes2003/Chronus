@@ -1,6 +1,7 @@
 package com.chronus.app.mark.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import com.chronus.app.MarkType;
@@ -212,6 +213,15 @@ public class MarkValidatorTest {
                 .thenReturn(markList);
 
         assertThat(sut.isExitMarkWithoutEntry(newMark)).isEqualTo(result);
+    }
+
+    @Test
+    void testExitMarkWithoutEntry_EmptyList() {
+        Mark mark = new Mark(new User("A", "B", "C"), LocalTime.of(8,0), LocalDate.now(), true, MarkType.EXIT);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate()))
+                .thenReturn(List.of());
+
+        assertTrue(sut.isExitMarkWithoutEntry(mark));
     }
 
     static Stream<Arguments> futureMarkProvider() {
