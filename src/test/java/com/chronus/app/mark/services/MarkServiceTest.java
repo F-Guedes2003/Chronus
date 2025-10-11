@@ -101,4 +101,18 @@ public class MarkServiceTest {
         when(repositoryMock.existsByTypeAndDate(mType, date)).thenReturn(true);
         assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(400,"Already has the mark type for this day",null));
     }
+
+    @Test
+    @DisplayName("Should not allow editing a mark to a time after an exit mark")
+    public void editingMarkToAfterExitMark() {
+        LocalDate date = LocalDate.of(2025, 3, 26);
+        User user = new User("Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
+        Mark entryMarkToEdit = new Mark(user, LocalTime.of(8, 0), date, true, MarkType.ENTRY);
+        Mark existingExitMark = new Mark(user, LocalTime.of(18, 0), date, true, MarkType.EXIT);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(LocalTime.of(8, 0), date)).thenReturn(List.of(entryMarkToEdit));
+        when(repositoryMock.findByUserAndDate(user, date)).thenReturn(List.of(entryMarkToEdit, existingExitMark));
+        Mark invalidEdit = new Mark(user, LocalTime.of(19, 0), date, true, MarkType.ENTRY);
+        HttpResponse<Mark> response = sut.editMark(invalidEdit);
+        assertThat(response).isEqualTo(new HttpResponse<Mark>(400, "Entry mark cannot be after an exit mark.", null));
+    }
 }
