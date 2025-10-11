@@ -95,6 +95,10 @@ public class MarkValidator {
 
         if (mark.getType() == MarkType.ENTRY) return false;
 
-        return dayMarks.isEmpty();
+        if (dayMarks.isEmpty()) return true;
+
+        return dayMarks
+                .stream()
+                .anyMatch(e -> (e.getType() == MarkType.ENTRY));
     }
 }
