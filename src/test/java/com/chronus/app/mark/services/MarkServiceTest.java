@@ -73,4 +73,17 @@ public class MarkServiceTest {
 
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Invalid Mark Type!", null));
     }
+
+    @Test
+    @DisplayName("Adding a new exit mark without an entry mark")
+    public void addingExitWithoutEntry() {
+        LocalDate date = LocalDate.of(2022, 3, 22);;
+        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
+        Mark mark = new Mark(user, LocalTime.of(8, 20), date, true, MarkType.ENTRY);
+
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate()))
+                .thenReturn(List.of());
+
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(201, "Mark added with success, but there is needed to add an entry mark!", null));
+    }
 }
