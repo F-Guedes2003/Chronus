@@ -99,6 +99,6 @@ public class MarkValidator {
 
         return (dayMarks
                 .stream()
-                .noneMatch(e -> (e.getType() == MarkType.ENTRY)));
+                .noneMatch(e -> (e.getType() == MarkType.ENTRY && e.getValid())));
     }
 }
