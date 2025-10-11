@@ -6,6 +6,7 @@ import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Service
@@ -37,6 +38,10 @@ public class MarkService {
 
         if(!validator.isValidMarkInterval(mark)) {
             return new HttpResponse<Mark>(400, "So much time between Marks!", null);
+        }
+
+        if(validator.isFutureMark(LocalDate.now(), mark)) {
+            return new HttpResponse<Mark>(400, "Cannot insert marks to future dates!", null);
         }
 
         if(!validator.isValidMarkType(mark)) {
