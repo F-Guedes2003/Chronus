@@ -38,6 +38,15 @@ public class MarkServiceTest {
     }
 
     @Test
+    @DisplayName("Should return an error message if the Mark Date is null")
+    public void shouldReturnAnErrorMessageIfTheMarkDateIsNull() {
+        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
+        Mark mark = new Mark(user, LocalTime.of(9, 0), null,true, MarkType.ENTRY);
+        HttpResponse<Mark> result = new HttpResponse<Mark>(400, "Mark date field must not be empty!", null);
+        assertThat(sut.addNewMark(mark)).isEqualTo(result);
+    }
+
+    @Test
     @DisplayName("Should return an error message if the Mark Time is null")
     public void shouldReturnAnErrorMessageIfTheMarkTimeIsNull() {
         Mark mark = new Mark(null, null, LocalDate.of(2025, 3, 12),true, MarkType.ENTRY);
