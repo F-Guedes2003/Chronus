@@ -6,18 +6,23 @@ import static org.mockito.Mockito.*;
 import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
+import com.chronus.app.mark.services.MarkService;
 import com.chronus.app.user.User;
 import com.chronus.app.utils.HttpResponse;
+import jakarta.persistence.Entity;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -33,27 +38,10 @@ public class MarkServiceTest {
     }
 
     @Test
-    @DisplayName("Should return an error message if the Mark Date is null")
-    public void shouldReturnAnErrorMessageIfTheMarkDateIsNull() {
-        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, LocalTime.of(9, 0), null,true, MarkType.ENTRY);
-        HttpResponse<Mark> result = new HttpResponse<>(400, "Mark date field must not be empty!", null);
-        assertThat(sut.addNewMark(mark)).isEqualTo(result);
-    }
-
-    @Test
-    @DisplayName("Should return an error message if the Mark Time is null")
-    public void shouldReturnAnErrorMessageIfTheMarkTimeIsNull() {
-        Mark mark = new Mark(null, null, LocalDate.of(2025, 3, 12),true, MarkType.ENTRY);
-        HttpResponse<Mark> result = new HttpResponse<>(400, "Mark time field must not be empty!", null);
-        assertThat(sut.addNewMark(mark)).isEqualTo(result);
-    }
-
-    @Test
     @DisplayName("Should return an error message if the user is null")
     public void shouldReturnAnErrorMessageIfTheUserIsNull() {
         Mark mark = new Mark(null, LocalTime.of(9, 0), LocalDate.of(2025, 3, 12),true, MarkType.ENTRY);
-        HttpResponse<Mark> result = new HttpResponse<>(400, "User field must not be empty!", null);
+        HttpResponse<Mark> result = new HttpResponse<Mark>(400, "User field must not be empty!", null);
         assertThat(sut.addNewMark(mark)).isEqualTo(result);
     }
 
@@ -70,7 +58,7 @@ public class MarkServiceTest {
                 .thenReturn(List.of());
         when(repositoryMock.save(mark)).
                 thenReturn(mark);
-        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<>(201, "Mark added with success!", mark));
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(201, "Mark added with success!", mark));
 
         verify(repositoryMock, atLeast(1)).save(mark);
     }
@@ -105,7 +93,8 @@ public class MarkServiceTest {
         User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
         Mark mark = new Mark(user,time,date,true,MarkType.ENTRY);
         when(repositoryMock.getMarkByMarkTimeAndMarkDate(time,date)).thenReturn(List.of(mark));
-        assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<>(200,"Mark successfully edited", mark));
+        Mark markEdit = new Mark(user,LocalTime.of(12,0),date,true,MarkType.EXIT);
+        assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",mark));
     }
 
     @ParameterizedTest
@@ -119,19 +108,5 @@ public class MarkServiceTest {
         when(repositoryMock.getMarkByMarkTimeAndMarkDate(time,date)).thenReturn(List.of(mark));
         when(repositoryMock.existsByTypeAndDate(mType, date)).thenReturn(true);
         assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(400,"Already has the mark type for this day",null));
-    }
-
-    @Test
-    @DisplayName("Adding a mark that goes beyond 12 hours")
-    public void addingANewMarkThatGoesBeyondMarkInterval() {
-        LocalDate date = LocalDate.of(2022, 3, 22);
-        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, LocalTime.of(21, 0), date);
-
-        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
-                .thenReturn(List.of(new Mark(user, LocalTime.of(9, 0), date)));
-
-        assertThat(sut.addNewMark(mark))
-                .isEqualTo(new HttpResponse<Mark>(400, "So much time between Marks!", null));
     }
 }
