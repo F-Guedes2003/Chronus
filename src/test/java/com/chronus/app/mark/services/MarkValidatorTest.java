@@ -185,6 +185,9 @@ public class MarkValidatorTest {
                 List.of(),
                 new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true),
                 Arguments.of(
+                        List.of(),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), false),
+                Arguments.of(
                         List.of(
                                 new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY)
                         ),
