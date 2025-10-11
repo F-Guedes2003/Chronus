@@ -69,7 +69,7 @@ public class MarkServiceTest {
         Mark mark = new Mark(user, LocalTime.of(8, 20), date, true, MarkType.ENTRY);
 
         when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
-                .thenReturn(List.of(new Mark(user, LocalTime.of(8, 25), date, true, MarkType.EXIT)));
+                .thenReturn(List.of(new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY)));
 
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Invalid Mark Type!", null));
     }

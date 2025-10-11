@@ -82,8 +82,15 @@ public class MarkValidator {
 
         if(markIndex == dayMarks.size()) return (dayMarks.getLast().getValid() != mark.getValid() || dayMarks.getLast().getType() != mark.getType());
 
+        if (markIndex == 0) return (!dayMarks.get(markIndex).getValid()
+                    || dayMarks.get(markIndex).getType() != mark.getType());
+
         return (!dayMarks.get(markIndex).getValid() || dayMarks.get(markIndex).getType() != mark.getType())
                 &&
                 (!dayMarks.get(markIndex - 1).getValid() || dayMarks.get(markIndex - 1).getType() != mark.getType());
+    }
+
+    public boolean isExitMarkWithoutEntry(Mark mark){
+        return false;
     }
 }

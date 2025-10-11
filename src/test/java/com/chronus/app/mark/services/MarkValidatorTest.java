@@ -176,4 +176,23 @@ public class MarkValidatorTest {
 
         assertThat(sut.isValidMarkType(newMark)).isEqualTo(result);
     }
+
+    static Stream<Arguments> exitMarksWithoutEntryProvider() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        var date = LocalDate.of(2025, 3, 12);
+
+        return Stream.of(Arguments.of(
+                List.of(),
+                new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), true));
+    }
+
+    @ParameterizedTest(name = "{1} - {0} marks should return {1}")
+    @MethodSource("exitMarksWithoutEntryProvider")
+    @DisplayName("should not be able to insert an exit mark without an entry mark")
+    public void cannotInsertAnExitMarkwithoutAnEntry(List<Mark> markList, Mark newMark, Boolean result) {
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(newMark.getMarkTime(), newMark.getMarkDate()))
+                .thenReturn(markList);
+
+        assertThat(sut.isExitMarkWithoutEntry(newMark)).isEqualTo(result);
+    }
 }
