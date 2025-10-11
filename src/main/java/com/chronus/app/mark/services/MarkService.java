@@ -25,6 +25,10 @@ public class MarkService {
     }
 
     public HttpResponse<Mark> addNewMark(Mark mark) {
+        if(mark.getMarkDate() == null) {
+            return new HttpResponse<Mark>(400, "Mark date field must not be empty!", null);
+        }
+
         if(mark.getMarkTime() == null) {
             return new HttpResponse<Mark>(400, "Mark time field must not be empty!", null);
         }
