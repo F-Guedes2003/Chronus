@@ -20,6 +20,7 @@ public class Mark {
     private LocalTime markTime;
     private LocalDate markDate;
     private Boolean isValid;
+    @Enumerated(EnumType.STRING)
     private MarkType type;
 
     public Mark() {}
