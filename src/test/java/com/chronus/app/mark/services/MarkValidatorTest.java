@@ -222,10 +222,10 @@ public class MarkValidatorTest {
                         new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT), false),
 
                 Arguments.of(LocalDate.of(2025, 3, 11),
-                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), false),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), true),
 
-                Arguments.of(LocalDate.of(2025, 3, 13),
-                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), true));
+                Arguments.of(LocalDate.of(2025, 3, 12),
+                        new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY), false));
     }
 
     @ParameterizedTest(name = "{index} - marks should return {2}")

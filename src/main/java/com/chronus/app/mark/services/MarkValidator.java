@@ -105,6 +105,7 @@ public class MarkValidator {
     }
 
     public boolean isFutureMark(LocalDate today, Mark mark) {
-        return false;
+        return mark.getMarkDate()
+                .isAfter(today);
     }
 }
