@@ -10,6 +10,7 @@ import com.chronus.app.mark.services.MarkService;
 import com.chronus.app.user.User;
 import com.chronus.app.utils.HttpResponse;
 import jakarta.persistence.Entity;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,10 +85,16 @@ public class MarkServiceTest {
         LocalDate date = LocalDate.of(2022,3,26);
         LocalTime time = LocalTime.of(7,59);
         User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark mark = new Mark(user,time,date,true,MarkType.ENTRY);
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(time,date)).thenReturn(List.of(mark));
-        Mark markEdit = new Mark(user,LocalTime.of(12,0),date,true,MarkType.EXIT);
-        assertThat(sut.editMark(mark,markEdit)).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",mark));
+        Mark entryMark = new Mark(user,time,date,true,MarkType.ENTRY);
+        Mark exitMark = new Mark(user, LocalTime.of(18,0),date,true,MarkType.EXIT);
+        when(repositoryMock.getMarkByMarkTimeAndMarkDate(entryMark.getMarkTime(), date))
+                .thenReturn(List.of(entryMark));
+        when(repositoryMock.getMarkByTypeAndDate(MarkType.ENTRY, date))
+                .thenReturn(entryMark);
+        when(repositoryMock.getMarkByTypeAndDate(MarkType.EXIT, date))
+                .thenReturn(exitMark);
+        Mark markEdit = new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY);
+        assertThat(sut.editMark(entryMark,markEdit)).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",entryMark));
     }
 
     @ParameterizedTest
