@@ -43,6 +43,10 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "Invalid Mark Type!", null);
         }
 
+        if(validator.isExitMarkWithoutEntry(mark)) {
+            return new HttpResponse<Mark>(201, "Mark added with success, but there is needed to add an entry mark!", mark);
+        }
+
         repository.save(mark);
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
