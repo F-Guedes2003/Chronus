@@ -108,4 +108,9 @@ public class MarkValidator {
         return mark.getMarkDate()
                 .isAfter(today);
     }
+
+    public boolean isYesterdayMarksOkay(LocalDate markDate) {
+
+        return false;
+    }
 }
