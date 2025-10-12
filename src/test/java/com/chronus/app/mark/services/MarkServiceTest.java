@@ -6,24 +6,16 @@ import static org.mockito.Mockito.*;
 import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
-import com.chronus.app.mark.services.MarkService;
 import com.chronus.app.user.User;
 import com.chronus.app.utils.HttpResponse;
-import jakarta.persistence.Entity;
-import net.bytebuddy.asm.Advice;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -40,6 +32,8 @@ public class MarkServiceTest {
 
     @Test
     @DisplayName("Adding a mark to a user")
+    @Tag("UnitTest")
+    @Tag("Functional")
     public void addingANewMarkTest() {
         LocalDate date = LocalDate.of(2022, 3, 22);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
@@ -58,6 +52,8 @@ public class MarkServiceTest {
 
     @Test
     @DisplayName("Adding a new mark to a date already marked")
+    @Tag("UnitTest")
+    @Tag("TDD")
     public void addingANewMarkToAnUnavailableDate() {
         LocalDate date = LocalDate.of(2022, 3, 22);
         LocalTime time = LocalTime.of(8, 25);
@@ -70,6 +66,8 @@ public class MarkServiceTest {
 
     @Test
     @DisplayName("Editing a inexistent mark for a user")
+    @Tag("UnitTest")
+    @Tag("TDD")
     public void editingAInexistentMark(){
         LocalDate inexistentDate = LocalDate.of(2022,3,28);
         LocalTime inexistentTime = LocalTime.of(10,30);
@@ -81,6 +79,8 @@ public class MarkServiceTest {
 
     @Test
     @DisplayName("Editing a valid mark")
+    @Tag("UnitTest")
+    @Tag("Functional")
     public void editingValidMark(){
         LocalDate date = LocalDate.of(2022,3,26);
         LocalTime time = LocalTime.of(7,59);
@@ -94,12 +94,18 @@ public class MarkServiceTest {
         when(repositoryMock.getMarkByTypeAndDate(MarkType.EXIT, date))
                 .thenReturn(exitMark);
         Mark markEdit = new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY);
+
+        // ATENÇÃO: O assert abaixo está incorreto. Ele espera a marcação ORIGINAL (entryMark) no corpo da resposta.
+        // O correto é esperar a marcação com os dados ATUALIZADOS (markEdit).
+        // A correção depende do seu método de serviço retornar a entidade salva e atualizada.
         assertThat(sut.editMark(entryMark,markEdit)).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",entryMark));
     }
 
     @ParameterizedTest
     @EnumSource(value = MarkType.class,names = {"ENTRY","EXIT"})
     @DisplayName("Editing mark with redundant mark type in list")
+    @Tag("UnitTest")
+    @Tag("TDD")
     public void editingMarkRedundantMarkTypeInList(MarkType mType){
         LocalDate date = LocalDate.of(2022,3,26);
         LocalTime time = LocalTime.of(7,59);
@@ -113,6 +119,8 @@ public class MarkServiceTest {
 
     @Test
     @DisplayName("Should not allow editing a mark to a time after an exit mark")
+    @Tag("UnitTest")
+    @Tag("TDD")
     public void editingMarkToAfterExitMark() {
         LocalDate date = LocalDate.of(2025, 3, 26);
         User user = new User("Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
