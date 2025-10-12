@@ -126,4 +126,23 @@ public class MarkServiceTest {
         assertThat(sut.addNewMark(mark))
                 .isEqualTo(new HttpResponse<Mark>(400, "So much time between Marks!", null));
     }
+
+    @Test
+    @DisplayName("Adding a mark with yesterday marks with inconcistencies")
+    public void addingANewMarkWithYesterdayInconsistencies() {
+        LocalDate date = LocalDate.of(2022, 3, 22);
+        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
+        Mark mark = new Mark(user, LocalTime.of(9, 0), date);
+
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
+                .thenReturn(List.of());
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate().minusDays(1)))
+                .thenReturn(List.of(
+                        new Mark(user, LocalTime.of(9, 0), date, true, MarkType.ENTRY),
+                        new Mark(user, LocalTime.of(12, 9), date, true, MarkType.EXIT),
+                        new Mark(user, LocalTime.of(9, 0), date, true, MarkType.ENTRY)));
+
+        assertThat(sut.addNewMark(mark))
+                .isEqualTo(new HttpResponse<Mark>(400, "There is inconsitencies on yesterday marks", mark));
+    }
 }

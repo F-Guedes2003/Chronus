@@ -53,12 +53,12 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "Invalid Mark Type!", null);
         }
 
-        if(validator.isExitMarkWithoutEntry(mark)) {
-            return new HttpResponse<Mark>(201, "Mark added with success, but there is needed to add an entry mark!", mark);
-        }
-
         if(!validator.isYesterdayMarksOkay(mark.getMarkDate())) {
             return new HttpResponse<Mark>(400, "There is inconsitencies on yesterday marks", mark);
+        }
+
+        if(validator.isExitMarkWithoutEntry(mark)) {
+            return new HttpResponse<Mark>(201, "Mark added with success, but there is needed to add an entry mark!", mark);
         }
 
         repository.save(mark);
