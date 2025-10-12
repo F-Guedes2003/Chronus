@@ -110,7 +110,17 @@ public class MarkValidator {
     }
 
     public boolean isYesterdayMarksOkay(LocalDate markDate) {
+        List<Mark> yesterdayMarks = repository.getMarksByMarkDate(markDate.minusDays(1));
+        long entryMarksCount = yesterdayMarks
+                .stream()
+                .filter(e -> e.getType() == MarkType.ENTRY)
+                .count();
 
-        return true;
+        long exitMarksCount = yesterdayMarks
+                .stream()
+                .filter(e -> e.getType() == MarkType.EXIT)
+                .count();
+
+        return entryMarksCount == exitMarksCount;
     }
 }
