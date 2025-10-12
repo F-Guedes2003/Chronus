@@ -273,6 +273,20 @@ public class MarkValidatorTest {
                                 new Mark(user, LocalTime.of(8, 26, 0), date, true, MarkType.ENTRY),
                                 new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.EXIT),
                                 new Mark(user, LocalTime.of(13, 0, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(18, 0, 0), date, true, MarkType.EXIT))),
+                Arguments.of(
+                        List.of(
+                                new Mark(user, LocalTime.of(8, 26, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(12, 0, 0), date, false, MarkType.EXIT),
+                                new Mark(user, LocalTime.of(12, 5, 0), date, true, MarkType.EXIT),
+                                new Mark(user, LocalTime.of(13, 0, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(18, 0, 0), date, true, MarkType.EXIT))),
+                Arguments.of(
+                        List.of(
+                                new Mark(user, LocalTime.of(8, 26, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.EXIT),
+                                new Mark(user, LocalTime.of(13, 0, 0), date, false, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(13, 0, 0), date, true, MarkType.ENTRY),
                                 new Mark(user, LocalTime.of(18, 0, 0), date, true, MarkType.EXIT))));
     }
 
