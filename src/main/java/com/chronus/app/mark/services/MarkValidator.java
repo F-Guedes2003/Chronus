@@ -111,6 +111,6 @@ public class MarkValidator {
 
     public boolean isYesterdayMarksOkay(LocalDate markDate) {
 
-        return false;
+        return true;
     }
 }

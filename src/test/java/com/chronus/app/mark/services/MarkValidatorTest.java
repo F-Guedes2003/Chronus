@@ -11,6 +11,7 @@ import com.chronus.app.user.User;
 import org.assertj.core.util.Streams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -244,5 +245,32 @@ public class MarkValidatorTest {
     public void verofyingFutureMark(LocalDate today, Mark mark, Boolean result) {
 
         assertThat(sut.isFutureMark(today, mark)).isEqualTo(result);
+    }
+
+    @Tag("TDD")
+    @Test
+    @DisplayName("Should accept mark if there is any inconsistency on yesterday marks")
+    public void shouldAcceptIfYesterdayMarkIsValid() {
+        LocalDate date = LocalDate.of(2025, 3, 12);
+        Mark newMark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
+        when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate()))
+                .thenReturn(List.of());
+        assertThat(sut.isYesterdayMarksOkay(newMark.getMarkDate()))
+                .isTrue();
+    }
+
+    @Tag("TDD")
+    @Test
+    @DisplayName("Should deny mark if there is a missing mark on yesterday")
+    public void shouldDenyIfYesterdayMarkIsMissing() {
+        LocalDate date = LocalDate.of(2025, 3, 12);
+        Mark newMark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
+        when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate()))
+                .thenReturn(List.of(
+                        new Mark(generalUser, LocalTime.of(9, 20, 0), date, true, MarkType.ENTRY),
+                        new Mark(generalUser, LocalTime.of(12, 20, 0), date, true, MarkType.ENTRY),
+                        new Mark(generalUser, LocalTime.of(16, 20, 0), date, true, MarkType.ENTRY)));
+        assertThat(sut.isYesterdayMarksOkay(newMark.getMarkDate()))
+                .isFalse();
     }
 }
