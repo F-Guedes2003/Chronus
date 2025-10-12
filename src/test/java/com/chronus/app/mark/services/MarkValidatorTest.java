@@ -253,7 +253,7 @@ public class MarkValidatorTest {
     public void shouldAcceptIfYesterdayMarkIsValidEmpty() {
         LocalDate date = LocalDate.of(2025, 3, 12);
         Mark newMark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
-        when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate()))
+        when(repositoryMock.getMarksByMarkDate(date.minusDays(1)))
                 .thenReturn(List.of());
         assertThat(sut.isYesterdayMarksOkay(newMark.getMarkDate()))
                 .isTrue();
