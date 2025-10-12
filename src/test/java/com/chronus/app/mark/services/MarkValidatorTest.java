@@ -245,4 +245,16 @@ public class MarkValidatorTest {
 
         assertThat(sut.isFutureMark(today, mark)).isEqualTo(result);
     }
+
+    @Test
+    @DisplayName("Should deny mark if there is an inconsistency on yesterday marks")
+    public void shouldDenyIfYesterdayMarkIsMissing() {
+        LocalDate date = LocalDate.of(2025, 3, 12);
+        Mark newMark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
+        when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate()))
+                .thenReturn(List.of())
+                .thenReturn(List.of());
+        assertThat(sut.isYesterdayMarksOkay(newMark.getMarkDate()))
+                .isTrue();
+    }
 }
