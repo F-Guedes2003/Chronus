@@ -113,12 +113,12 @@ public class MarkValidator {
         List<Mark> yesterdayMarks = repository.getMarksByMarkDate(markDate.minusDays(1));
         long entryMarksCount = yesterdayMarks
                 .stream()
-                .filter(e -> e.getType() == MarkType.ENTRY)
+                .filter(e -> (e.getType() == MarkType.ENTRY && e.getValid()))
                 .count();
 
         long exitMarksCount = yesterdayMarks
                 .stream()
-                .filter(e -> e.getType() == MarkType.EXIT)
+                .filter(e -> (e.getType() == MarkType.EXIT && e.getValid()))
                 .count();
 
         return entryMarksCount == exitMarksCount;
