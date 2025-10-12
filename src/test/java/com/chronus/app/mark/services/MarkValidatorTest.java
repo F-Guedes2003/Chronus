@@ -249,12 +249,43 @@ public class MarkValidatorTest {
 
     @Tag("TDD")
     @Test
-    @DisplayName("Should accept mark if there is any inconsistency on yesterday marks")
-    public void shouldAcceptIfYesterdayMarkIsValid() {
+    @DisplayName("Should accept mark if there is any inconsistency on yesterday marks(empty)")
+    public void shouldAcceptIfYesterdayMarkIsValidEmpty() {
         LocalDate date = LocalDate.of(2025, 3, 12);
         Mark newMark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
         when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate()))
                 .thenReturn(List.of());
+        assertThat(sut.isYesterdayMarksOkay(newMark.getMarkDate()))
+                .isTrue();
+    }
+
+    static Stream<Arguments> validMarksProvider() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        var date = LocalDate.of(2025, 3, 11);
+
+        return Stream.of(
+                Arguments.of(
+                        List.of(
+                                new Mark(user, LocalTime.of(8, 26, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.EXIT))),
+                Arguments.of(
+                        List.of(
+                                new Mark(user, LocalTime.of(8, 26, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(12, 0, 0), date, true, MarkType.EXIT),
+                                new Mark(user, LocalTime.of(13, 0, 0), date, true, MarkType.ENTRY),
+                                new Mark(user, LocalTime.of(18, 0, 0), date, true, MarkType.EXIT))));
+    }
+
+    @Tag("TDD")
+    @MethodSource("validMarksProvider")
+    @ParameterizedTest(name = "{index} - should return {1}")
+    @DisplayName("Should accept mark if there is any inconsistency on yesterday marks(with marks)")
+    public void shouldAcceptIfYesterdayMarkIsValid(List<Mark> repositoryReturn) {
+        LocalDate date = LocalDate.of(2025, 3, 12);
+        Mark newMark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
+        when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate().minusDays(1)))
+                .thenReturn(repositoryReturn);
+
         assertThat(sut.isYesterdayMarksOkay(newMark.getMarkDate()))
                 .isTrue();
     }
@@ -265,11 +296,12 @@ public class MarkValidatorTest {
     public void shouldDenyIfYesterdayMarkIsMissing() {
         LocalDate date = LocalDate.of(2025, 3, 12);
         Mark newMark = new Mark(generalUser, LocalTime.of(9, 0, 0), date, true, MarkType.ENTRY);
-        when(repositoryMock.getMarksByMarkDate(newMark.getMarkDate()))
+        when(repositoryMock.getMarksByMarkDate(date.minusDays(1)))
                 .thenReturn(List.of(
                         new Mark(generalUser, LocalTime.of(9, 20, 0), date, true, MarkType.ENTRY),
                         new Mark(generalUser, LocalTime.of(12, 20, 0), date, true, MarkType.ENTRY),
                         new Mark(generalUser, LocalTime.of(16, 20, 0), date, true, MarkType.ENTRY)));
+
         assertThat(sut.isYesterdayMarksOkay(newMark.getMarkDate()))
                 .isFalse();
     }
