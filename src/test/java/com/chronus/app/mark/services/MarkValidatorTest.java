@@ -58,7 +58,7 @@ public class MarkValidatorTest {
                 new Mark(user, LocalTime.of(7, 50, 0), date),
                 new Mark(user, LocalTime.of(9, 1, 0), date));
 
-        return Stream.of(Arguments.of(listOne, false), Arguments.of(listTwo, true));
+        return Stream.of(Arguments.of(listOne, false), Arguments.of(listTwo, true), Arguments.of(List.of(), true));
     }
 
     @ParameterizedTest(name = "[{index}] -> Interval validation should return {1}")
@@ -87,6 +87,17 @@ public class MarkValidatorTest {
         return Stream.of(
                 Arguments.of(listOne, new Mark(user, LocalTime.of(7, 50, 0), date, false, MarkType.ENTRY), Arguments.of(listTwo, true)),
                 Arguments.of());
+    }
+
+    @Test
+    @DisplayName("Should return true on mark type verification if there is any Mark on the day")
+    public void shouldReturnTrueOnAnEmptyDayOnMarkTypeVerification() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        var date = LocalDate.of(2025, 3, 12);
+        var mark = new Mark(user, LocalTime.of(8, 50, 0), date, true, MarkType.EXIT);
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(List.of());
+
+        assertThat(sut.isValidMarkType(mark)).isEqualTo(true);
     }
 
     static Stream<Arguments> marksTypeProviderOfValidNeighbours() {
