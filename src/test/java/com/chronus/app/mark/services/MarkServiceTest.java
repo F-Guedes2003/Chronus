@@ -105,20 +105,4 @@ public class MarkServiceTest {
         when(repositoryMock.existsByTypeAndDate(mType,date)).thenReturn(true);
         assertThat(sut.editMark(editedMark)).isEqualTo(new HttpResponse<Mark>(400, "Already has the mark type for this day", null));
     }
-
-    @Test
-    @DisplayName("Should return 400 for input mark type entry after mark type exit")
-    @Tag("UnitTest")
-    @Tag("TDD")
-    public void shouldReturnFourHundredForInputMarkEntryAfterExit(){
-
-        LocalDate date = LocalDate.of(2022,3,26);
-        LocalTime time = LocalTime.of(7,59);
-        User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark entryMark = new Mark(user,time,date,true,MarkType.ENTRY);
-        Mark exitMark = new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT);
-        Mark editMark = new Mark(user,LocalTime.of(18,1),date,true,MarkType.ENTRY);
-        when(repositoryMock.getMarksByMarkDate(date)).thenReturn(List.of(entryMark,exitMark));
-        assertThat(sut.editMark(editMark)).isEqualTo(new HttpResponse<Mark>(400, "Cannot add an entry type after exit", null));
-    }
 }

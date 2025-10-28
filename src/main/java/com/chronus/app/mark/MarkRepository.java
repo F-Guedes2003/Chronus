@@ -15,8 +15,6 @@ public interface MarkRepository extends JpaRepository<Mark, Integer> {
     boolean existsByTypeAndDate(MarkType type, LocalDate date);
     List<Mark> getMarksByMarkDate(LocalDate date);
     Optional<Mark> getMarksByDate(LocalDate date);
-    Mark getMarkByTypeAndDate(MarkType type,LocalDate date);
-    List<Mark> findByUserAndDate(User user, LocalDate date);
     Mark getMarkById(int id);
     boolean findMarkById(int id);
 }

@@ -59,8 +59,6 @@ public class MarkService {
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
 
-
-
     public HttpResponse<Mark> editMark(Mark mark) {
         Optional<Mark> marks = repository.getMarksByDate(mark.getMarkDate());
 
@@ -69,9 +67,6 @@ public class MarkService {
 
         if(repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()))
             return new HttpResponse<Mark>(400,"Already has the mark type for this day",null);
-
-
-
 
         Mark markToEdit = repository.getMarkById(mark.getId());
 
