@@ -16,8 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cglib.core.Local;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,5 +106,16 @@ public class MarkServiceTest {
         when(repositoryMock.getMarkById(editedMark.getId())).thenReturn(editedMark);
         when(repositoryMock.existsByTypeAndDate(mType,date)).thenReturn(true);
         assertThat(sut.editMark(editedMark)).isEqualTo(new HttpResponse<Mark>(400, "Already has the mark type for this day", null));
+    }
+
+    @Test
+    @DisplayName("Should return the working hours")
+    public void shouldReturnTheWorkingHours(){
+        LocalDate date = LocalDate.of(2025,1,6);
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark entry = new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY);
+        Mark exit = new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT);
+
+        assertThat(sut.calculateWorkShift(entry.getMarkTime(),exit.getMarkTime())).isEqualTo(Duration.ofHours(10));
     }
 }

@@ -5,9 +5,12 @@ import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -72,5 +75,8 @@ public class MarkService {
         markToEdit.setType(mark.getType());
         repository.save(markToEdit);
         return new HttpResponse<Mark>(200,"Mark successfully edited",mark);
+    }
+
+    public Duration calculateWorkShift(LocalTime entry, LocalTime exit){
     }
 }
