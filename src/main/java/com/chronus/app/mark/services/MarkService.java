@@ -5,11 +5,15 @@ import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class MarkService {
@@ -58,25 +62,24 @@ public class MarkService {
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
 
-    public HttpResponse<Mark> editMark(Mark mark, Mark editedMark) {
-        List<Mark> m = repository.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(),mark.getMarkDate());
-        Mark entryMark = repository.getMarkByTypeAndDate(MarkType.ENTRY,mark.getMarkDate());
-        Mark exitMark = repository.getMarkByTypeAndDate(MarkType.EXIT,mark.getMarkDate());
+    public HttpResponse<Mark> editMark(Mark mark) {
+        Mark markToEdit = repository.getMarkById(mark.getId());
 
-        if (!m.contains(mark))
-            return new HttpResponse<Mark>(400, "Inexistent mark for this user.", null);
+        if (!repository.findMarkById(mark.getId()))
+            return new HttpResponse<Mark>(404, "Inexistent mark for this user.", null);
 
-        Mark markToEdit = m.getFirst();
-
-        if(markToEdit.equals(mark) && repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()))
+        if(repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()))
             return new HttpResponse<Mark>(400,"Already has the mark type for this day",null);
 
-        if(editedMark.getMarkTime().isAfter(exitMark.getMarkTime()) && editedMark.getType().equals(MarkType.ENTRY))
-            return new HttpResponse<Mark>(400, "Entry mark cannot be after an exit mark.", null);
-
-        markToEdit.setMarkTime(editedMark.getMarkTime());
-        markToEdit.setType(editedMark.getType());
+        markToEdit.setMarkTime(mark.getMarkTime());
+        markToEdit.setType(mark.getType());
         repository.save(markToEdit);
         return new HttpResponse<Mark>(200,"Mark successfully edited",mark);
+    }
+
+    public Duration calculateWorkShift(List<Mark> workShift){
+        LocalTime entry = workShift.getFirst().getMarkTime();
+        LocalTime exit = workShift.getLast().getMarkTime();
+        return Duration.between(entry,exit);
     }
 }

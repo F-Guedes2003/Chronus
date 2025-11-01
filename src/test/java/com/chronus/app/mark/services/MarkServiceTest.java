@@ -14,15 +14,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cglib.core.Local;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class MarkServiceTest {
     MarkService sut = new MarkService();
-    @Mock MarkRepository repositoryMock;
+    @Mock
+    MarkRepository repositoryMock;
 
     @BeforeEach
     public void setup() {
@@ -59,7 +64,6 @@ public class MarkServiceTest {
         LocalTime time = LocalTime.of(8, 25);
         User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
         Mark mark = new Mark(user, time, date);
-
         when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of(new Mark(user, time, date)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
     }
@@ -68,69 +72,71 @@ public class MarkServiceTest {
     @DisplayName("Editing a inexistent mark for a user")
     @Tag("UnitTest")
     @Tag("TDD")
-    public void editingAInexistentMark(){
-        LocalDate inexistentDate = LocalDate.of(2022,3,28);
-        LocalTime inexistentTime = LocalTime.of(10,30);
-        User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark editedMark = new Mark(user,LocalTime.of(12,0),LocalDate.of(2025,3,3));
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(inexistentTime,inexistentDate)).thenReturn(List.of());
-        assertThat(sut.editMark(new Mark(user,inexistentTime,inexistentDate),editedMark)).isEqualTo(new HttpResponse<Mark>(400,"Inexistent mark for this user.",null));
+    public void editingAInexistentMark() {
+        User user = new User("Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
+        Mark editedMark = new Mark(user, LocalTime.of(12, 0), LocalDate.of(2025, 3, 3));
+        when(repositoryMock.getMarkById(editedMark.getId())).thenReturn(null);
+        assertThat(sut.editMark(editedMark)).isEqualTo(new HttpResponse<Mark>(404, "Inexistent mark for this user.", null));
     }
 
     @Test
     @DisplayName("Editing a valid mark")
     @Tag("UnitTest")
     @Tag("Functional")
-    public void editingValidMark(){
-        LocalDate date = LocalDate.of(2022,3,26);
-        LocalTime time = LocalTime.of(7,59);
-        User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark entryMark = new Mark(user,time,date,true,MarkType.ENTRY);
-        Mark exitMark = new Mark(user, LocalTime.of(18,0),date,true,MarkType.EXIT);
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(entryMark.getMarkTime(), date))
-                .thenReturn(List.of(entryMark));
-        when(repositoryMock.getMarkByTypeAndDate(MarkType.ENTRY, date))
-                .thenReturn(entryMark);
-        when(repositoryMock.getMarkByTypeAndDate(MarkType.EXIT, date))
-                .thenReturn(exitMark);
-        Mark markEdit = new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY);
-
-        // ATENÇÃO: O assert abaixo está incorreto. Ele espera a marcação ORIGINAL (entryMark) no corpo da resposta.
-        // O correto é esperar a marcação com os dados ATUALIZADOS (markEdit).
-        // A correção depende do seu método de serviço retornar a entidade salva e atualizada.
-        assertThat(sut.editMark(entryMark,markEdit)).isEqualTo(new HttpResponse<Mark>(200,"Mark successfully edited",entryMark));
+    public void editingValidMark() {
+        LocalDate date = LocalDate.of(2022, 3, 26);
+        User user = new User("Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
+        Mark markEdit = new Mark(user, LocalTime.of(8, 0), date, true, MarkType.ENTRY);
+        when(repositoryMock.findMarkById(markEdit.getId())).thenReturn(true);
+        when(repositoryMock.getMarkById(markEdit.getId())).thenReturn(markEdit);
+        assertThat(sut.editMark(markEdit)).isEqualTo(new HttpResponse<Mark>(200, "Mark successfully edited", markEdit));
     }
 
     @ParameterizedTest
-    @EnumSource(value = MarkType.class,names = {"ENTRY","EXIT"})
+    @EnumSource(value = MarkType.class, names = {"ENTRY", "EXIT"})
     @DisplayName("Editing mark with redundant mark type in list")
     @Tag("UnitTest")
     @Tag("TDD")
-    public void editingMarkRedundantMarkTypeInList(MarkType mType){
-        LocalDate date = LocalDate.of(2022,3,26);
-        LocalTime time = LocalTime.of(7,59);
-        User user = new User("Bruno Fuchs","raça123","brunofuchs3@sep.com");
-        Mark mark = new Mark(user,time,date,true, mType);
-        Mark editedMark = new Mark(user,time,date,true,mType);
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(time,date)).thenReturn(List.of(mark));
-        when(repositoryMock.existsByTypeAndDate(mType, date)).thenReturn(true);
-        assertThat(sut.editMark(mark,editedMark)).isEqualTo(new HttpResponse<Mark>(400,"Already has the mark type for this day",null));
+    public void editingMarkRedundantMarkTypeInList(MarkType mType) {
+        LocalDate date = LocalDate.of(2022, 3, 26);
+        LocalTime time = LocalTime.of(7, 59);
+        User user = new User("Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
+        Mark editedMark = new Mark(user, time, date, true, mType);
+        when(repositoryMock.findMarkById(editedMark.getId())).thenReturn(true);
+        when(repositoryMock.getMarkById(editedMark.getId())).thenReturn(editedMark);
+        when(repositoryMock.existsByTypeAndDate(mType,date)).thenReturn(true);
+        assertThat(sut.editMark(editedMark)).isEqualTo(new HttpResponse<Mark>(400, "Already has the mark type for this day", null));
     }
 
     @Test
-    @DisplayName("Should not allow editing a mark to a time after an exit mark")
+    @DisplayName("Should return the working hours")
     @Tag("UnitTest")
     @Tag("TDD")
-    public void editingMarkToAfterExitMark() {
-        LocalDate date = LocalDate.of(2025, 3, 26);
-        User user = new User("Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
-        Mark entryMarkToEdit = new Mark(user, LocalTime.of(8, 0), date, true, MarkType.ENTRY);
-        Mark existingExitMark = new Mark(user, LocalTime.of(18, 0), date, true, MarkType.EXIT);
-        when(repositoryMock.getMarkByMarkTimeAndMarkDate(LocalTime.of(8, 0), date)).thenReturn(List.of(entryMarkToEdit));
-        when(repositoryMock.getMarkByTypeAndDate(MarkType.ENTRY, date)).thenReturn(entryMarkToEdit);
-        when(repositoryMock.getMarkByTypeAndDate(MarkType.EXIT, date)).thenReturn(existingExitMark);
-        Mark invalidEdit = new Mark(user, LocalTime.of(19, 0), date, true, MarkType.ENTRY);
-        HttpResponse<Mark> response = sut.editMark(entryMarkToEdit,invalidEdit);
-        assertThat(response).isEqualTo(new HttpResponse<Mark>(400, "Entry mark cannot be after an exit mark.", null));
+    public void shouldReturnTheWorkingHours(){
+        LocalDate date = LocalDate.of(2025,1,6);
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark entry = new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY);
+        Mark exit = new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT);
+        assertThat(sut.calculateWorkShift(List.of(entry,exit))).isEqualTo(Duration.ofHours(10));
+    }
+
+    @Test
+    @DisplayName("Should return 400 if Mark time is null")
+    @Tag("StructuralTest")
+    @Tag("UnitTest")
+    public void shouldReturn400IfMarkTimeIsNull(){
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark mark = new Mark(user,null,LocalDate.of(2025,1,1),true,MarkType.ENTRY);
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Mark time field must not be empty!", null));
+    }
+
+    @Test
+    @DisplayName("Should return 400 if user is null")
+    @Tag("StructuralTest")
+    @Tag("UnitTest")
+    public void shouldReturn400IfUserIsNull(){
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark mark = new Mark(null,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
     }
 }

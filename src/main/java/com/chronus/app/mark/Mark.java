@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "marks")
@@ -38,6 +39,10 @@ public class Mark {
         this.markDate = markDate;
         this.isValid = isValid;
         this.type = type;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public User getUser() {

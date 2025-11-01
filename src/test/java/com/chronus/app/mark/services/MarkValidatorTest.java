@@ -244,6 +244,6 @@ public class MarkValidatorTest {
     @DisplayName("should not be able to insert a mark to a future date")
     public void verofyingFutureMark(LocalDate today, Mark mark, Boolean result) {
 
-        assertThat(sut.isFutureMark(today, mark)).isEqualTo(result);
+        assertThat(sut.isFutureMark(today,mark)).isEqualTo(result);
     }
 }
