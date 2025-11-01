@@ -110,6 +110,8 @@ public class MarkServiceTest {
 
     @Test
     @DisplayName("Should return the working hours")
+    @Tag("UnitTest")
+    @Tag("TDD")
     public void shouldReturnTheWorkingHours(){
         LocalDate date = LocalDate.of(2025,1,6);
         User user = new User("Aislan","teste123","aislan@teste.com");
@@ -117,4 +119,15 @@ public class MarkServiceTest {
         Mark exit = new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT);
         assertThat(sut.calculateWorkShift(List.of(entry,exit))).isEqualTo(Duration.ofHours(10));
     }
+
+    @Test
+    @DisplayName("Should return 400 if Mark time is null")
+    @Tag("StructuralTest")
+    @Tag("UnitTest")
+    public void shouldReturn400IfMarkTimeIsNull(){
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark mark = new Mark(user,null,LocalDate.of(2025,1,1),true,MarkType.ENTRY);
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Mark time field must not be empty!", null));
+    }
+
 }
