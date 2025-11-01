@@ -12,9 +12,8 @@ import java.util.Optional;
 
 public interface MarkRepository extends JpaRepository<Mark, Integer> {
     List<Mark> getMarkByMarkTimeAndMarkDate(LocalTime time, LocalDate date);
-    boolean existsByTypeAndDate(MarkType type, LocalDate date);
+    boolean existsByTypeAndMarkDate(MarkType type, LocalDate date);
     List<Mark> getMarksByMarkDate(LocalDate date);
-    Optional<Mark> getMarksByDate(LocalDate date);
     Mark getMarkById(int id);
     boolean findMarkById(int id);
 }

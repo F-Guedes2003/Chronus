@@ -68,7 +68,7 @@ public class MarkService {
         if (!repository.findMarkById(mark.getId()))
             return new HttpResponse<Mark>(404, "Inexistent mark for this user.", null);
 
-        if(repository.existsByTypeAndDate(mark.getType(),mark.getMarkDate()))
+        if(repository.existsByTypeAndMarkDate(mark.getType(),mark.getMarkDate()))
             return new HttpResponse<Mark>(400,"Already has the mark type for this day",null);
 
         markToEdit.setMarkTime(mark.getMarkTime());
