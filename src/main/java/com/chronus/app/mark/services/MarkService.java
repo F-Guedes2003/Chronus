@@ -77,6 +77,9 @@ public class MarkService {
         return new HttpResponse<Mark>(200,"Mark successfully edited",mark);
     }
 
-    public Duration calculateWorkShift(LocalTime entry, LocalTime exit){
+    public Duration calculateWorkShift(List<Mark> workShift){
+        LocalTime entry = workShift.getFirst().getMarkTime();
+        LocalTime exit = workShift.getLast().getMarkTime();
+        return Duration.between(entry,exit);
     }
 }

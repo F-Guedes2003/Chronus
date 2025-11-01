@@ -115,7 +115,6 @@ public class MarkServiceTest {
         User user = new User("Aislan","teste123","aislan@teste.com");
         Mark entry = new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY);
         Mark exit = new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT);
-
-        assertThat(sut.calculateWorkShift(entry.getMarkTime(),exit.getMarkTime())).isEqualTo(Duration.ofHours(10));
+        assertThat(sut.calculateWorkShift(List.of(entry,exit))).isEqualTo(Duration.ofHours(10));
     }
 }
