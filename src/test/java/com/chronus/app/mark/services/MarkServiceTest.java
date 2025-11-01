@@ -130,4 +130,13 @@ public class MarkServiceTest {
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Mark time field must not be empty!", null));
     }
 
+    @Test
+    @DisplayName("Should return 400 if user is null")
+    @Tag("StructuralTest")
+    @Tag("UnitTest")
+    public void shouldReturn400IfUserIsNull(){
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark mark = new Mark(null,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
+    }
 }
