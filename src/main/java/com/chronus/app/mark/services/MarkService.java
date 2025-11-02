@@ -32,6 +32,18 @@ public class MarkService {
         this.userRepository = userRepository;
     }
 
+    public HttpResponse<List<Mark>> getMarksByMonthAndYear(LocalDate date) {
+        if (date == null) return new HttpResponse<>(400, "Date must not be null", List.of());
+
+        var year = date.getYear();
+        var month = date.getMonth().getValue();
+        List<Mark> marks = repository.findAllByYearAndMonth(year, month);
+
+        if (marks.isEmpty()) return new HttpResponse<>(200, "There is no mark for this month", List.of());
+
+        return new HttpResponse<>(200, "Marks fetched successfully", marks);
+    }
+
     public HttpResponse<Mark> addNewMark(Mark mark) {
 
         if(mark.getUser() == null) {

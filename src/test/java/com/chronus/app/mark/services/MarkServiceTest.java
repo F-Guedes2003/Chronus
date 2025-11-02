@@ -177,4 +177,52 @@ public class MarkServiceTest {
         Mark mark = new Mark(null,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
     }
+
+    @Nested
+    public class GetMarks {
+        @Test
+        @DisplayName("Should return all marks from a given month and year")
+        @Tag("UnitTest")
+        @Tag("Functional")
+        public void shouldReturnAllMarksFromGivenMonthAndYear() {
+            var date = LocalDate.of(2025, 11, 1);
+            var user = new User(1, "Flaco", "password", "flaco@sep.com");
+            var mark1 = new Mark(user, LocalTime.of(8, 0), LocalDate.of(2025, 11, 2), true, MarkType.ENTRY);
+            var mark2 = new Mark(user, LocalTime.of(18, 0), LocalDate.of(2025, 11, 2), true, MarkType.EXIT);
+
+            when(repositoryMock.findAllByYearAndMonth(2025, 11)).thenReturn(List.of(mark1, mark2));
+
+            var response = sut.getMarksByMonthAndYear(date);
+
+            assertThat(response).isEqualTo(new HttpResponse<>(200, "Marks fetched successfully", List.of(mark1, mark2)));
+            verify(repositoryMock, times(1)).findAllByYearAndMonth(2025, 11);
+        }
+
+        @Test
+        @DisplayName("Should return empty list if there are no marks in the month")
+        @Tag("UnitTest")
+        @Tag("TDD")
+        public void shouldReturnEmptyListIfNoMarksFoundForMonth() {
+            var date = LocalDate.of(2025, 11, 1);
+
+            when(repositoryMock.findAllByYearAndMonth(2025, 11)).thenReturn(List.of());
+
+            var response = sut.getMarksByMonthAndYear(date);
+
+            assertThat(response).isEqualTo(new HttpResponse<>(200, "There is no mark for this month", List.of()));
+            verify(repositoryMock, times(1)).findAllByYearAndMonth(2025, 11);
+        }
+
+        @Test
+        @DisplayName("Should return 400 if date is null")
+        @Tag("UnitTest")
+        @Tag("StructuralTest")
+        public void shouldReturn400IfDateIsNull() {
+            var response = sut.getMarksByMonthAndYear(null);
+
+            assertThat(response).isEqualTo(new HttpResponse<>(400, "Date must not be null", List.of()));
+            verify(repositoryMock, never()).findAllByYearAndMonth(anyInt(), anyInt());
+        }
+
+    }
 }

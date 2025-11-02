@@ -6,6 +6,9 @@ import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/v1/marks")
@@ -17,6 +20,12 @@ public class markController {
     @GetMapping("/test")
     public String helloController() {
         return "hello";
+    }
+
+    @GetMapping("/")
+    public HttpResponse<List<Mark>> getMarksByMonthAndYear(LocalDate date) {
+
+        return service.getMarksByMonthAndYear(date);
     }
 
     @PostMapping("/mark")
