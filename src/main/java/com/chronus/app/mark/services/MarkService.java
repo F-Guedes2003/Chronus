@@ -42,17 +42,13 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "Already exists a mark to this date!", null);
         }
 
-        if(!validator.isValidMarkInterval(mark)) {
-            return new HttpResponse<Mark>(400, "So much time between Marks!", null);
-        }
+      //  if(validator.isFutureMark(LocalDate.now(), mark)) {
+        //    return new HttpResponse<Mark>(400, "Cannot insert marks to future dates!", null);
+      //  }
 
-        if(validator.isFutureMark(LocalDate.now(), mark)) {
-            return new HttpResponse<Mark>(400, "Cannot insert marks to future dates!", null);
-        }
-
-        if(!validator.isValidMarkType(mark)) {
-            return new HttpResponse<Mark>(400, "Invalid Mark Type!", null);
-        }
+       // if(!validator.isValidMarkType(mark)) {
+        //    return new HttpResponse<Mark>(400, "Invalid Mark Type!", null);
+       // }
 
         if(validator.isExitMarkWithoutEntry(mark)) {
             return new HttpResponse<Mark>(201, "Mark added with success, but there is needed to add an entry mark!", mark);
@@ -64,6 +60,14 @@ public class MarkService {
 
     public HttpResponse<Mark> editMark(Mark mark) {
         Mark markToEdit = repository.getMarkById(mark.getId());
+
+        if(mark.getMarkTime() == null) {
+            return new HttpResponse<Mark>(400, "Mark time field must not be empty!", null);
+        }
+
+        if(mark.getUser() == null) {
+            return new HttpResponse<Mark>(400, "User field must not be empty!", null);
+        }
 
         if (!repository.findMarkById(mark.getId()))
             return new HttpResponse<Mark>(404, "Inexistent mark for this user.", null);

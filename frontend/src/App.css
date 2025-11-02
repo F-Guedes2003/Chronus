@@ -1,3 +1,7 @@
+body {
+  margin: 0;
+}
+
 .header{
   background-color: green;
   margin: 0;
@@ -6,6 +10,7 @@
 ul{
   height: 50px;
   margin: 0;
+  display: flex;
 }
 
 li{
@@ -14,16 +19,93 @@ li{
 
 .header-button{
   color: white;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bolder;
+  font-family:"MD Primer Bold", Rubik, Lato, "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif;
+  font-weight: bold;
+  font-size: medium;
   background-color: green;
   border: none;
   height: 100%;
+  padding: 15px;
   transition: 1s;
+}
+
+.title{
+  color: green;
+  font-family:"MD Primer Bold", Rubik, Lato, "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif;
+  font-weight: bold;
+  font-size: medium;
+  background-color: white;
+  height: 30px;
+  border: none;
+  padding: 15px;
 }
 
 .header-button:hover{
   background-color: #06402B;
   transition: 1s;
+}
+
+.mark-card {
+  background-color: green;
+  border-radius: 20px;
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 300px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-self: center;
+  padding: 10px;
+}
+
+.item-form {
+  margin-top: 10px;
+  display: grid;
+  align-items: center;
+}
+
+label {
+  margin-right: 10px;
+  margin-bottom: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: white;
+}
+
+input {
+  border-radius: 5px;
+  padding: 5px;
+  border: none;
+}
+
+.bt-submit {
+  background-color: white;
+  color: #000;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 15px;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  transition: 0.75s;
+}
+
+.bt-submit:hover {
+  background-color: #06402B;
+  color: white;
+  transition: 0.75s;
+}
+
+.avatar {
+  align-self: center;
+  justify-self: flex-end;
+  margin-left: auto;
+  margin-right: 20px;
+  width: 30px;
+  height: 30px;
 }
 

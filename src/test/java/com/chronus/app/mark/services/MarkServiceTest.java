@@ -14,14 +14,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.cglib.core.Local;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Period;
 import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class MarkServiceTest {
@@ -128,6 +125,7 @@ public class MarkServiceTest {
         User user = new User("Aislan","teste123","aislan@teste.com");
         Mark mark = new Mark(user,null,LocalDate.of(2025,1,1),true,MarkType.ENTRY);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Mark time field must not be empty!", null));
+        assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Mark time field must not be empty!", null));
     }
 
     @Test
@@ -135,8 +133,18 @@ public class MarkServiceTest {
     @Tag("StructuralTest")
     @Tag("UnitTest")
     public void shouldReturn400IfUserIsNull(){
-        User user = new User("Aislan","teste123","aislan@teste.com");
         Mark mark = new Mark(null,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
+        assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
+    }
+
+    @Test
+    @DisplayName("Should return 201 if exit mark is added without a entry mark")
+    @Tag("MutationTest")
+    @Tag("UnitTest")
+    public void shouldReturn201IfExitMarkAddedWithoutEntryMark(){
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark mark = new Mark(user,LocalTime.of(18,0),LocalDate.of(2025,1,1),true,MarkType.EXIT);
+        assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(201, "Mark added with success, but there is needed to add an entry mark!", mark));
     }
 }
