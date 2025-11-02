@@ -1,20 +1,22 @@
 package com.chronus.app.mark;
 
 import com.chronus.app.MarkType;
-import com.chronus.app.user.User;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface MarkRepository extends JpaRepository<Mark, Integer> {
-    List<Mark> getMarkByMarkTimeAndMarkDate(LocalTime time, LocalDate date);
-    boolean existsByTypeAndDate(MarkType type, LocalDate date);
-    List<Mark> getMarksByMarkDate(LocalDate date);
-    Optional<Mark> getMarksByDate(LocalDate date);
-    Mark getMarkById(int id);
+
+    List<Mark> getMarkByMarkTimeAndMarkDate(LocalTime markTime, LocalDate markDate);
+
+    boolean existsByTypeAndMarkDate(MarkType type, LocalDate markDate);
+
+    List<Mark> getMarksByMarkDate(LocalDate markDate);
+
     boolean findMarkById(int id);
+
+    Mark getMarkById(int id);
 }
+

@@ -101,7 +101,7 @@ public class MarkServiceTest {
         Mark editedMark = new Mark(user, time, date, true, mType);
         when(repositoryMock.findMarkById(editedMark.getId())).thenReturn(true);
         when(repositoryMock.getMarkById(editedMark.getId())).thenReturn(editedMark);
-        when(repositoryMock.existsByTypeAndDate(mType,date)).thenReturn(true);
+        when(repositoryMock.existsByTypeAndMarkDate(mType,date)).thenReturn(true);
         assertThat(sut.editMark(editedMark)).isEqualTo(new HttpResponse<Mark>(400, "Already has the mark type for this day", null));
     }
 

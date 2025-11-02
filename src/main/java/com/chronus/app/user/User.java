@@ -1,6 +1,10 @@
 package com.chronus.app.user;
 
+import com.chronus.app.mark.Mark;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -11,6 +15,8 @@ public class User {
     private String name;
     private String password;
     private String email;
+    @OneToMany(mappedBy = "user")
+    private List<Mark> marks = new ArrayList<>();
 
     public User() {
 

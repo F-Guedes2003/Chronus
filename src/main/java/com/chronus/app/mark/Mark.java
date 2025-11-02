@@ -2,7 +2,9 @@ package com.chronus.app.mark;
 
 import com.chronus.app.MarkType;
 import com.chronus.app.user.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,12 +17,19 @@ public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime markTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate markDate;
+
     private Boolean isValid;
+
     @Enumerated(EnumType.STRING)
     private MarkType type;
 

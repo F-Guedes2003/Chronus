@@ -16,9 +16,8 @@ import java.util.Optional;
 
 @Service
 public class MarkValidator {
-    protected MarkRepository repository;
 
-    public MarkValidator() {};
+    protected MarkRepository repository;
 
     public MarkValidator(MarkRepository repository) {
         this.repository = repository;
