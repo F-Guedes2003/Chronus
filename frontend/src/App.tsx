@@ -1,15 +1,7 @@
-// App.tsx
-import MarkForm from './components/MarkForm';
-import Header from './components/Header';
-import './App.css';
+import { AppRoutes } from "./routes";
 
-function App() {
-  return (
-    <div>
-      <Header />
-      <MarkForm />
-    </div>
-  );
+export function App() {
+  return <AppRoutes/>
 }
 
-export default App;
+export default App
