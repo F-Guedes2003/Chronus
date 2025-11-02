@@ -1,12 +1,20 @@
 /* App.css */
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
 }
 
 .header {
   background-color: #282c34;
   padding: 10px;
+  margin-bottom: 20px;
   color: white;
+}
+
+ul {
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
 }
 
 .header-button {
@@ -16,6 +24,12 @@ body {
   font-weight: bold;
   margin-right: 15px;
   cursor: pointer;
+  transition: 0.5s;
+}
+
+.header-button:hover {
+  transition: 0.5s;
+  background-color: #41464e;
 }
 
 .form-container {

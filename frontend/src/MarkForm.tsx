@@ -1,70 +1,108 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import './App.css'
 
-function MarkForm(){
-  const [markDate, setMarkDate] = useState("")
 
-  const [markTime,setMarkTime] = useState("")
+// Tipos
+type MarkType = 'ENTRY' | 'EXIT';
 
-  const [type,setType] = useState("ENTRY")
+interface User {
+  id: number;
+}
 
-  const changeMarkTime = (e: any) => {
-    setMarkTime(e.target.value)
-  }
+interface Mark {
+  user: User;
+  markTime: string; // hora no formato HH:mm
+  markDate: string; // data no formato YYYY-MM-DD
+  type: MarkType;
+}
 
-  const changeMarkDate = (e: any) => {
-    setMarkDate(e.target.value)
-  }
+interface HttpResponse<T> {
+  status: number;
+  message: string;
+  data: T | null;
+}
 
-  const changeType = (e: any) => {
-    setType(e.target.value.toUpperCase())
-  }
+function MarkForm() {
+  const [userId, setUserId] = useState<number | ''>('');
+  const [markTime, setMarkTime] = useState('');
+  const [markDate, setMarkDate] = useState('');
+  const [markType, setMarkType] = useState<MarkType>('ENTRY');
+  const [message, setMessage] = useState('');
 
-  function handleSubmit(e: any) {
-    e.preventDefault()
-    console.log(markTime,markDate,type)
-    fetch('http://localhost:8080/api/v1/marks/mark',{
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "markTime": markTime,
-        "markDate": markDate,
-        "type": type,
-        "valid": "true",
-        "user": {
-            "id": 28,
-            "name": "Vitor Roque",
-            "email": "vitinbates@sep.com",
-            "password": "password"
-        }
-      })
-      }).then(response => response.text())
-        .then(text => console.log(text))
-        .catch(err => console.log(err.message))
-  }
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
 
-  return(
-    <div className='mark-card'>
+    if (!userId || !markTime || !markDate) {
+      setMessage('Todos os campos são obrigatórios!');
+      return;
+    }
+
+    const payload: Mark = {
+      user: { id: userId as number },
+      markTime,
+      markDate,
+      type: markType,
+    };
+
+    try {
+      console.log(payload)
+      const response = await fetch('http://localhost:8080/api/v1/marks/mark', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data: HttpResponse<Mark> = await response.json();
+      setMessage(`${data.status} - ${data.message}`);
+    } catch (err) {
+      console.error(err);
+      setMessage('Erro ao enviar marcação!');
+    }
+  };
+
+  return (
+    <div className='form-container'>
+      <h2>Registrar Ponto</h2>
       <form onSubmit={handleSubmit}>
-        <div className='item-form'>
-          <label>Ponto</label>
-          <input className='input-form' type='date' value={markDate} onChange={changeMarkDate} name='mark'/>
-          <input className='input-form' type='time' value={markTime} onChange={changeMarkTime} name='mark'/>
-        </div>
-        <div className='item-form'>
-          <label>Tipo do Ponto </label>
-          <select name='mark-type' onChange={changeType} className='mark-type'>
-            <option value="entry">Entrada</option>
-            <option value="exit">Saida</option>
+        <label>
+          User ID:
+          <input
+            type='number'
+            value={userId}
+            onChange={(e) => setUserId(e.target.value === '' ? '' : parseInt(e.target.value))}
+          />
+        </label>
+        <label>
+          Data da marcação:
+          <input
+            type='date'
+            value={markDate}
+            onChange={(e) => setMarkDate(e.target.value)}
+          />
+        </label>
+        <label>
+          Hora da marcação:
+          <input
+            type='time'
+            value={markTime}
+            onChange={(e) => setMarkTime(e.target.value)}
+          />
+        </label>
+        <label>
+          Tipo de ponto:
+          <select
+            value={markType}
+            onChange={(e) => setMarkType(e.target.value as MarkType)}
+          >
+            <option value='ENTRY'>Entrada</option>
+            <option value='EXIT'>Saída</option>
           </select>
-        </div>
-        <button className='bt-submit' type='submit' name='submit-bt'>Enviar Ponto</button>
+        </label>
+        <button type='submit'>Registrar</button>
       </form>
+      {message && <p className='message'>{message}</p>}
     </div>
-  )
+  );
 }
 
 export default MarkForm
