@@ -56,10 +56,6 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "user is Empty", null);
         }
 
-        if (userRepository.findUserById(userId).isEmpty()) {
-            return new HttpResponse<Mark>(400, "Mark time field must not be empty!", null);
-        }
-
         mark.setUser(userRepository.findUserById(userId).get());
 
         if(mark.getMarkTime() == null) {

@@ -9,6 +9,12 @@ body {
   color: white;
 }
 
+ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+}
+
 .header-button {
   background: none;
   border: none;
@@ -16,6 +22,12 @@ body {
   font-weight: bold;
   margin-right: 15px;
   cursor: pointer;
+  transition: 0.7s;
+}
+
+.header-button:hover {
+  background-color: #41464e;
+  transition: 0.7s;
 }
 
 .form-container {
