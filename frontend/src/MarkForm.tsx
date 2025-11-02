@@ -2,31 +2,37 @@ import { useState } from 'react'
 import './App.css'
 
 function MarkForm(){
-  const [mark, setMark] = useState("")
+  const [markDate, setMarkDate] = useState("")
 
-  const [type,setType] = useState("")
+  const [markTime,setMarkTime] = useState("")
 
-  function handleChange(e: any) {
-    setMark(e.target.value)
+  const [type,setType] = useState("ENTRY")
+
+  const changeMarkTime = (e: any) => {
+    setMarkTime(e.target.value)
   }
 
-  function handleChangeType(e: any) {
-    setType(e.target.value)
+  const changeMarkDate = (e: any) => {
+    setMarkDate(e.target.value)
+  }
+
+  const changeType = (e: any) => {
+    setType(e.target.value.toUpperCase())
   }
 
   function handleSubmit(e: any) {
     e.preventDefault()
-    console.log(mark,type)
-    /*fetch('http://localhost:8080/api/v1/marks/mark',{
+    console.log(markTime,markDate,type)
+    fetch('http://localhost:8080/api/v1/marks/mark',{
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "markTime": "08:00:00",
-        "markDate": "2025-03-03",
-        "type": "ENTRY",
+        "markTime": markTime,
+        "markDate": markDate,
+        "type": type,
         "valid": "true",
         "user": {
             "id": 28,
@@ -37,7 +43,7 @@ function MarkForm(){
       })
       }).then(response => response.text())
         .then(text => console.log(text))
-        .catch(err => console.log(err.message))*/
+        .catch(err => console.log(err.message))
   }
 
   return(
@@ -45,11 +51,12 @@ function MarkForm(){
       <form onSubmit={handleSubmit}>
         <div className='item-form'>
           <label>Ponto</label>
-          <input type='datetime-local' value={mark} onChange={handleChange} name='mark' placeholder='Ponto de Entrada'/>
+          <input className='input-form' type='date' value={markDate} onChange={changeMarkDate} name='mark'/>
+          <input className='input-form' type='time' value={markTime} onChange={changeMarkTime} name='mark'/>
         </div>
         <div className='item-form'>
           <label>Tipo do Ponto </label>
-          <select name='mark-type' onSelect={handleChangeType} className='mark-type'>
+          <select name='mark-type' onChange={changeType} className='mark-type'>
             <option value="entry">Entrada</option>
             <option value="exit">Saida</option>
           </select>
