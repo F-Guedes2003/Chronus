@@ -3,6 +3,7 @@ package com.chronus.app.mark.services;
 import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
+import com.chronus.app.user.UserRepository;
 import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
@@ -20,23 +21,50 @@ public class MarkService {
 
     protected MarkRepository repository;
     protected MarkValidator validator;
+    protected UserRepository userRepository;
 
     public MarkService() {
     }
 
     @Autowired
-    public MarkService(MarkRepository repository, MarkValidator validator) {
+    public MarkService(MarkRepository repository, MarkValidator validator, UserRepository userRepository) {
         this.repository = repository;
         this.validator = validator;
+        this.userRepository = userRepository;
+    }
+
+    public HttpResponse<List<Mark>> getMarksByMonthAndYear(LocalDate date) {
+        if (date == null) return new HttpResponse<>(400, "Date must not be null", List.of());
+
+        var year = date.getYear();
+        var month = date.getMonth().getValue();
+        List<Mark> marks = repository.findAllByYearAndMonth(year, month);
+
+        if (marks.isEmpty()) return new HttpResponse<>(200, "There is no mark for this month", List.of());
+
+        return new HttpResponse<>(200, "Marks fetched successfully", marks);
     }
 
     public HttpResponse<Mark> addNewMark(Mark mark) {
-        if(mark.getMarkTime() == null) {
-            return new HttpResponse<Mark>(400, "Mark time field must not be empty!", null);
-        }
 
         if(mark.getUser() == null) {
             return new HttpResponse<Mark>(400, "User field must not be empty!", null);
+        }
+
+        var userId = mark.getUser().getId();
+
+        if (userId == 0) {
+            return new HttpResponse<Mark>(400, "user is Empty", null);
+        }
+
+        if (userRepository.findUserById(userId).isEmpty()) {
+            return new HttpResponse<Mark>(400, "Mark time field must not be empty!", null);
+        }
+
+        mark.setUser(userRepository.findUserById(userId).get());
+
+        if(mark.getMarkTime() == null) {
+            return new HttpResponse<Mark>(400, "Mark time field must not be empty!", null);
         }
 
         if(validator.isDateTimeAlreadyMarked(mark)){
@@ -52,6 +80,7 @@ public class MarkService {
         }
 
         if(validator.isExitMarkWithoutEntry(mark)) {
+            repository.save(mark);
             return new HttpResponse<Mark>(201, "Mark added with success, but there is needed to add an entry mark!", mark);
         }
 

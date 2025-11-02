@@ -82,6 +82,10 @@ public class Mark {
         isValid = valid;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public MarkType getType() {
         return type;
     }

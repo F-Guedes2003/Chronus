@@ -1,121 +1,53 @@
+/* App.css */
 body {
-  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
-.header{
-  background-color: green;
-  margin: 0;
-}
-
-ul{
-  height: 50px;
-  margin: 0;
-  display: flex;
-}
-
-li{
-  list-style: none;
-}
-
-.header-button{
+.header {
+  background-color: #282c34;
+  padding: 10px;
   color: white;
-  font-family:"MD Primer Bold", Rubik, Lato, "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif;
-  font-weight: bold;
-  font-size: medium;
-  background-color: green;
+}
+
+.header-button {
+  background: none;
   border: none;
-  height: 100%;
-  padding: 15px;
-  transition: 1s;
-}
-
-.title{
-  color: green;
-  font-family:"MD Primer Bold", Rubik, Lato, "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif;
+  color: white;
   font-weight: bold;
-  font-size: medium;
-  background-color: white;
-  height: 30px;
-  border: none;
-  padding: 15px;
+  margin-right: 15px;
+  cursor: pointer;
 }
 
-.header-button:hover{
-  background-color: #06402B;
-  transition: 1s;
+.form-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
 }
 
-.mark-card {
-  background-color: green;
-  border-radius: 20px;
+form label {
   display: block;
-  margin: auto;
-  margin-top: 20px;
-  width: 300px;
+  margin-bottom: 10px;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  justify-self: center;
-  padding: 10px;
-}
-
-.item-form {
-  margin-top: 10px;
-  display: grid;
-  align-items: center;
-}
-
-.input-form {
-  margin-top: 5px;
-}
-
-label {
-  margin-right: 10px;
-  margin-bottom: 5px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  color: white;
-}
-
-input {
-  border-radius: 5px;
+form input, form select {
+  width: 100%;
   padding: 5px;
-  border: none;
+  margin-top: 5px;
+  margin-bottom: 15px;
 }
 
-.bt-submit {
-  background-color: white;
-  color: #000;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
-  margin-top: 15px;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-  transition: 0.75s;
-}
-
-.bt-submit:hover {
-  background-color: #06402B;
+button {
+  padding: 10px 15px;
+  background-color: #282c34;
   color: white;
-  transition: 0.75s;
-}
-
-.avatar {
-  align-self: center;
-  justify-self: flex-end;
-  margin-left: auto;
-  margin-right: 20px;
-  width: 30px;
-  height: 30px;
-}
-
-.mark-type{
   border: none;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
+.message {
+  margin-top: 15px;
+  font-weight: bold;
+}

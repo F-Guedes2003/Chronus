@@ -10,6 +10,7 @@ import com.chronus.app.user.User;
 import org.assertj.core.util.Streams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -58,7 +59,7 @@ public class MarkValidatorTest {
                 new Mark(user, LocalTime.of(7, 50, 0), date),
                 new Mark(user, LocalTime.of(9, 1, 0), date));
 
-        return Stream.of(Arguments.of(listOne, false), Arguments.of(listTwo, true));
+        return Stream.of(Arguments.of(listOne, false), Arguments.of(listTwo, true), Arguments.of(List.of(), true));
     }
 
     @ParameterizedTest(name = "[{index}] -> Interval validation should return {1}")
@@ -87,6 +88,17 @@ public class MarkValidatorTest {
         return Stream.of(
                 Arguments.of(listOne, new Mark(user, LocalTime.of(7, 50, 0), date, false, MarkType.ENTRY), Arguments.of(listTwo, true)),
                 Arguments.of());
+    }
+
+    @Test
+    @DisplayName("Should return true on mark type verification if there is any Mark on the day")
+    public void shouldReturnTrueOnAnEmptyDayOnMarkTypeVerification() {
+        User user = new User("Flaco López", "password", "Flaquito Matador");
+        var date = LocalDate.of(2025, 3, 12);
+        var mark = new Mark(user, LocalTime.of(8, 50, 0), date, true, MarkType.EXIT);
+        when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(List.of());
+
+        assertThat(sut.isValidMarkType(mark)).isEqualTo(true);
     }
 
     static Stream<Arguments> marksTypeProviderOfValidNeighbours() {
@@ -234,5 +246,26 @@ public class MarkValidatorTest {
     public void verofyingFutureMark(LocalDate today, Mark mark, Boolean result) {
 
         assertThat(sut.isFutureMark(today,mark)).isEqualTo(result);
+    }
+
+    @Nested
+    public class structuralTests {
+
+        @Test
+        @DisplayName("Teting isValidMarkType when the added mark will be the first mark of the day")
+        public void testingValidMarkTypeWhenTheNewItemIsTheFirstPoint() {
+            var user = new User("Flaco Lopez", "Flaquito", "flakitomatador@sep.com");
+            var date = LocalDate.of(2025, 3, 12);
+            var mark = new Mark(user, LocalTime.of(8, 0, 0), date, true, MarkType.ENTRY);
+
+            when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(List.of(
+                    new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY),
+                    new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT)
+            ));
+
+            assertThat(sut.isValidMarkType(mark))
+                    .isFalse();
+
+        }
     }
 }
