@@ -14,7 +14,7 @@ ul{
 }
 
 li{
-  display: inline;
+  list-style: none;
 }
 
 .header-button{
@@ -107,5 +107,11 @@ input {
   margin-right: 20px;
   width: 30px;
   height: 30px;
+}
+
+.mark-type{
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
 }
 
