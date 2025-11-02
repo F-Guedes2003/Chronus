@@ -7,6 +7,7 @@ import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
 import com.chronus.app.user.User;
+import com.chronus.app.user.UserRepository;
 import com.chronus.app.utils.HttpResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,11 +29,14 @@ public class MarkServiceTest {
     MarkService sut = new MarkService();
     @Mock
     MarkRepository repositoryMock;
+    @Mock
+    UserRepository userRepositoryMock;
 
     @BeforeEach
     public void setup() {
         sut.repository = repositoryMock;
         sut.validator = new MarkValidator(repositoryMock);
+        sut.userRepository = userRepositoryMock;
     }
 
     @Test
@@ -40,10 +44,12 @@ public class MarkServiceTest {
     @Tag("UnitTest")
     @Tag("Functional")
     public void addingANewMarkTest() {
-        LocalDate date = LocalDate.of(2022, 3, 22);
-        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY);
+        var date = LocalDate.of(2022, 3, 22);
+        var user = new User(1,"Flaco Lópes", "password", "flacomatador@sep.com");
+        var mark = new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY);
 
+        when(userRepositoryMock.findUserById(1L))
+                .thenReturn(Optional.of(user));
         when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate()))
                 .thenReturn(List.of());
         when(repositoryMock.getMarksByMarkDate(mark.getMarkDate()))
@@ -56,14 +62,45 @@ public class MarkServiceTest {
     }
 
     @Test
+    @DisplayName("Should return 400 when user id is 0")
+    @Tag("TDD")
+    public void shouldReturn400WhenUserIdIsZero() {
+        var date = LocalDate.of(2022, 3, 22);
+        var user = new User("Flaco", "password", "flaco@sep.com");
+        var mark = new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY);
+
+        assertThat(sut.addNewMark(mark))
+                .isEqualTo(new HttpResponse<>(400, "user is Empty", null));
+    }
+
+    @Test
+    @DisplayName("Should return 400 when user does not exist in repository")
+    @Tag("TDD")
+    public void shouldReturn400WhenUserNotFound() {
+        // Arrange
+        var date = LocalDate.of(2022, 3, 22);
+        var user = new User(1, "Flaco", "password", "flaco@sep.com");
+        var mark = new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY);
+
+        when(userRepositoryMock.findUserById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThat(sut.addNewMark(mark))
+                .isEqualTo(new HttpResponse<>(400, "Mark time field must not be empty!", null));
+    }
+
+
+    @Test
     @DisplayName("Adding a new mark to a date already marked")
     @Tag("UnitTest")
     @Tag("TDD")
     public void addingANewMarkToAnUnavailableDate() {
-        LocalDate date = LocalDate.of(2022, 3, 22);
-        LocalTime time = LocalTime.of(8, 25);
-        User user = new User("Flaco Lópes", "password", "flacomatador@sep.com");
-        Mark mark = new Mark(user, time, date);
+        var date = LocalDate.of(2022, 3, 22);
+        var time = LocalTime.of(8, 25);
+        var user = new User(1,"Flaco Lópes", "password", "flacomatador@sep.com");
+        var mark = new Mark(user, time, date);
+
+        when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
         when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of(new Mark(user, time, date)));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Already exists a mark to this date!", null));
     }
@@ -125,8 +162,9 @@ public class MarkServiceTest {
     @Tag("StructuralTest")
     @Tag("UnitTest")
     public void shouldReturn400IfMarkTimeIsNull(){
-        User user = new User("Aislan","teste123","aislan@teste.com");
+        User user = new User(1,"Aislan","teste123","aislan@teste.com");
         Mark mark = new Mark(user,null,LocalDate.of(2025,1,1),true,MarkType.ENTRY);
+        when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Mark time field must not be empty!", null));
     }
 

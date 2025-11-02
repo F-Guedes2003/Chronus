@@ -3,6 +3,7 @@ package com.chronus.app.mark.services;
 import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -20,6 +21,7 @@ public class MarkValidator {
 
     public MarkValidator() {};
 
+    @Autowired
     public MarkValidator(MarkRepository repository) {
         this.repository = repository;
     }
