@@ -10,6 +10,7 @@ import com.chronus.app.user.User;
 import org.assertj.core.util.Streams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -245,5 +246,26 @@ public class MarkValidatorTest {
     public void verofyingFutureMark(LocalDate today, Mark mark, Boolean result) {
 
         assertThat(sut.isFutureMark(today,mark)).isEqualTo(result);
+    }
+
+    @Nested
+    public class structuralTests {
+
+        @Test
+        @DisplayName("Teting isValidMarkType when the added mark will be the first mark of the day")
+        public void testingValidMarkTypeWhenTheNewItemIsTheFirstPoint() {
+            var user = new User("Flaco Lopez", "Flaquito", "flakitomatador@sep.com");
+            var date = LocalDate.of(2025, 3, 12);
+            var mark = new Mark(user, LocalTime.of(8, 0, 0), date, true, MarkType.ENTRY);
+
+            when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(List.of(
+                    new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.ENTRY),
+                    new Mark(user, LocalTime.of(8, 45, 0), date, true, MarkType.EXIT)
+            ));
+
+            assertThat(sut.isValidMarkType(mark))
+                    .isFalse();
+
+        }
     }
 }
