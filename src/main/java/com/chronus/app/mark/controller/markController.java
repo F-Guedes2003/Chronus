@@ -22,10 +22,10 @@ public class markController {
         return "hello";
     }
 
-    @GetMapping("/")
-    public HttpResponse<List<Mark>> getMarksByMonthAndYear(LocalDate date) {
+    @GetMapping
+    public HttpResponse<List<Mark>> getMarksByMonthAndYear(@RequestParam int month, @RequestParam int year) {
 
-        return service.getMarksByMonthAndYear(date);
+        return service.getMarksByMonthAndYear(LocalDate.of(year,month,1));
     }
 
     @PostMapping("/mark")

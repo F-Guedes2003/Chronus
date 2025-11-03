@@ -1,5 +1,4 @@
 import { useState, type FormEvent } from 'react';
-// Tipos
 type MarkType = 'ENTRY' | 'EXIT';
 
 interface User {
@@ -8,8 +7,8 @@ interface User {
 
 interface Mark {
   user: User;
-  markTime: string; // hora no formato HH:mm
-  markDate: string; // data no formato YYYY-MM-DD
+  markTime: string;
+  markDate: string;
   type: MarkType;
 }
 

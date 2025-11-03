@@ -1,15 +1,51 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
- 
+
+type MarkType = 'ENTRY' | 'EXIT';
+
+interface Mark {
+  markTime: string;
+  markDate: string;
+  type: MarkType;
+}
+
 const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-const days = ['01','02','03','04','05','06','07','08','09',10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+const days: string[] = []
+
+for(let i = 1;i <= 31;i++){
+    let day:string = i.toString()
+    days.push(day.length < 2 ? '0'+ day : day)
+}
+
+
 
 export function ManageMarks(){
 
-    const [month, setMonth] = useState('Fevereiro')
+    const [marks, setMarks] = useState<Mark[]>([]);
 
+    const [month, setMonth] = useState('Janeiro')
+
+    const handleChange = async(e: React.ChangeEvent<HTMLSelectElement>) => {
+        const month = e.target.value;
+        const numMonth = e.target.selectedIndex + 1;
+        setMonth(month);
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/marks?month=${numMonth}&year=2025`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const json = await response.json()
+            const data = json.data
+            setMarks(data);
+            console.log(marks)
+        } catch (err) {
+            console.error(err);
+        } 
+    }
+    
     return(
         <>
             <Navbar/>
@@ -17,9 +53,9 @@ export function ManageMarks(){
                 <header>
                     Gerenciamento de Pontos
                     <div className="select-container">
-                        <select onChange={(e) => setMonth(e.target.value)}>
-                            {months.map((month) =>
-                                <option key={month} value={month}>{month}</option>
+                        <select onChange={handleChange}>
+                            {months.map((month, index) =>
+                                <option key={index} value={month}>{month}</option>
                             )}
                         </select>
                         <select>
@@ -31,13 +67,15 @@ export function ManageMarks(){
 
                     <li className="marks-header">
                         <span className="day-label">Dia</span>
-                        <span className="point1-label">Ponto 1</span>
-                        <span className="point2-label">Ponto 2</span>
-                        <span className="type-label">Tipo</span>
+                        <span className="point1-label">Ponto Entrada</span>
+                        <span className="point2-label">Ponto Saida</span>
                     </li>
-
-                    {days.map((day) =>
-                        <li className="day">Dia {day}</li>
+                    {marks.map((mark) =>
+                        <li className="day">
+                            <span className="day-label">{mark.markDate}</span>
+                            <span className="point1-label">{mark.type == 'ENTRY' ? mark.markTime : ''}</span>
+                            <span className="point2-label">{mark.type == 'EXIT' ? mark.markTime : ''}</span>
+                        </li>
                     )}
                 </ul>
             </div>
