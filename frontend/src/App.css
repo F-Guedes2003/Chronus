@@ -11,6 +11,9 @@ body {
 
 ul {
   list-style: none;
+}
+
+.navbar {
   display: flex;
   flex-direction: row;
 }
@@ -68,6 +71,8 @@ button {
     margin-top: 72px;
     width: 1200px;
     justify-self: center;
+    border: 1px solid #282c34;
+    border-radius: 10px;
 }
 
 header {
@@ -78,6 +83,23 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.marks-header,
+.day {
+  display: grid;
+  grid-template-columns: 50px 100px 100px 100px; /* ajuste conforme precisar */
+  gap: 250px;
+  padding: 5px 0;
+  font-weight: bold;
+}
+
+.marks-header {
+  border-bottom: 2px solid #ccc;
+}
+.marks {
+  margin: 1px;
+  padding: 0;
 }
 
 select {
