@@ -25,12 +25,8 @@ export function ManageMarks(){
 
     const [marks, setMarks] = useState<Mark[]>([]);
 
-    const [month, setMonth] = useState('Janeiro')
-
     const handleChange = async(e: React.ChangeEvent<HTMLSelectElement>) => {
-        const month = e.target.value;
         const numMonth = e.target.selectedIndex + 1;
-        setMonth(month);
         try {
             const response = await fetch(`http://localhost:8080/api/v1/marks?month=${numMonth}&year=2025`, {
                 method: 'GET',
