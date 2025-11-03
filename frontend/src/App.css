@@ -63,3 +63,25 @@ button {
   margin-top: 15px;
   font-weight: bold;
 }
+
+.list-marks{
+    margin-top: 72px;
+    width: 1200px;
+    justify-self: center;
+}
+
+header {
+  background-color: #282c34;
+  border-radius: 10px;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+select {
+  border-radius: 10px;
+  padding: 5px;
+  margin-left: 10px;
+}

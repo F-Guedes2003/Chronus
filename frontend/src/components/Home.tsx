@@ -1,11 +1,11 @@
 import MarkForm from './MarkForm';
-import Header from './Header';
+import Navbar from './Navbar';
 import '../App.css';
 
 function Home() {
   return (
     <div>
-      <Header />
+      <Navbar />
       <MarkForm />
     </div>
   );
