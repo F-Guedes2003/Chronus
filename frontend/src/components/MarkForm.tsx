@@ -94,7 +94,7 @@ function MarkForm() {
             <option value='EXIT'>Saída</option>
           </select>
         </label>
-        <button type='submit'>Registrar</button>
+        <button className='register' type='submit'>Registrar</button>
       </form>
       {message && <p className='message'>{message}</p>}
     </div>

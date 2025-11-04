@@ -19,6 +19,8 @@ ul {
 }
 
 .header-button {
+  padding: 10px 15px;
+  border-radius: 5px;
   background: none;
   border: none;
   color: white;
@@ -53,13 +55,34 @@ form input, form select {
   margin-bottom: 15px;
 }
 
-button {
+button.register {
   padding: 10px 15px;
   background-color: #282c34;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+button.edit {
+  padding: 5px;
+  background-color: #282c34;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 25px;
+}
+
+input {
+  margin-bottom: 5px;
 }
 
 .message {
@@ -90,8 +113,9 @@ header {
 .marks-header,
 .day {
   display: grid;
-  grid-template-columns: 150px 200px 100px;
-  gap: 350px;
+  align-items: center;
+  grid-template-columns: 70px 150px 100px 100px;
+  gap: 250px;
   padding: 5px 0;
   font-weight: bold;
   transition: 0.7s;

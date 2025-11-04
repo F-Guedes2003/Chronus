@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import Navbar from "./Navbar";
+import Popup from "reactjs-popup";
 
 type MarkType = 'ENTRY' | 'EXIT';
 
@@ -63,6 +64,10 @@ export function ManageMarks(){
             console.error(err);
         } 
     }
+
+    const handleEdit = async(e: GroupedMark) => {
+
+    }
     
     return(
         <>
@@ -93,6 +98,14 @@ export function ManageMarks(){
                             <span className="point-body">{group.markDate}</span>
                             <span className="point-body">{group.entryTime}</span>
                             <span className="point-body">{group.exitTime}</span>
+                            <Popup trigger={<button className="edit"> Editar </button>} modal>¨
+                                <div className="modal">
+                                    <input type="text" value={group.markDate}/>
+                                    <input type="text" value={group.entryTime}/>
+                                    <input type="text" value={group.exitTime}/>
+                                    <button onClick={() => handleEdit(group)} className="edit">Salvar</button>
+                                </div>
+                            </Popup>
                         </li>
                     )}
                 </ul>
