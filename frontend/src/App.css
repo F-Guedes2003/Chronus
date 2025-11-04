@@ -108,3 +108,8 @@ select {
   padding: 5px;
   margin-left: 10px;
 }
+
+.point-body {
+  font-weight: normal;
+  font-size: 12px;
+}

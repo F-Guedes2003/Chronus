@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Navbar from "./Navbar";
 
 type MarkType = 'ENTRY' | 'EXIT';
@@ -9,21 +9,43 @@ interface Mark {
   type: MarkType;
 }
 
-const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-
-const days: string[] = []
-
-for(let i = 1;i <= 31;i++){
-    let day:string = i.toString()
-    days.push(day.length < 2 ? '0'+ day : day)
+interface GroupedMark {
+    markDate: string;
+    entryTime: string;
+    exitTime: string;
 }
 
-
+const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
 export function ManageMarks(){
 
     const [marks, setMarks] = useState<Mark[]>([]);
+
+    const groupedMarks = useMemo(() => {
+        const groups = new Map<string, GroupedMark>();
+
+        marks.forEach(mark => {
+            const date = mark.markDate;
+            
+            if (!groups.has(date)) {
+                groups.set(date, {
+                    markDate: date,
+                    entryTime: '',
+                    exitTime: ''
+                });
+            }
+
+            const currentGroup = groups.get(date)!;
+
+            if (mark.type === 'ENTRY') {
+                currentGroup.entryTime = currentGroup.entryTime ? `${currentGroup.entryTime}, ${mark.markTime}` : mark.markTime;
+            } else if (mark.type === 'EXIT') {
+                currentGroup.exitTime = currentGroup.exitTime ? `${currentGroup.exitTime}, ${mark.markTime}` : mark.markTime;
+            }
+        });
+        return Array.from(groups.values());
+    }, [marks]);
 
     const handleChange = async(e: React.ChangeEvent<HTMLSelectElement>) => {
         const numMonth = e.target.selectedIndex + 1;
@@ -36,7 +58,7 @@ export function ManageMarks(){
             const json = await response.json()
             const data = json.data
             setMarks(data);
-            console.log(marks)
+            console.log(data)
         } catch (err) {
             console.error(err);
         } 
@@ -66,11 +88,11 @@ export function ManageMarks(){
                         <span className="point1-label">Ponto Entrada</span>
                         <span className="point2-label">Ponto Saida</span>
                     </li>
-                    {marks.map((mark) =>
+                    {groupedMarks.map((group) =>
                         <li className="day">
-                            <span className="day-label">{mark.markDate}</span>
-                            <span className="point1-label">{mark.type == 'ENTRY' ? mark.markTime : ''}</span>
-                            <span className="point2-label">{mark.type == 'EXIT' ? mark.markTime : ''}</span>
+                            <span className="point-body">{group.markDate}</span>
+                            <span className="point-body">{group.entryTime}</span>
+                            <span className="point-body">{group.exitTime}</span>
                         </li>
                     )}
                 </ul>
