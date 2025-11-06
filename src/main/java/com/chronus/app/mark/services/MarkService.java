@@ -113,8 +113,9 @@ public class MarkService {
 
         if(id == null || id <= 0 ) return new HttpResponse<String>(400, "Invalid id provided", null);
 
-        if(!repository.findMarkById(id)) return new HttpResponse<String>(404, "Mark Not Found!", null);
+        if(repository.getMarkById(id) == null) return new HttpResponse<String>(404, "Mark Not Found!", null);
 
-        return new HttpResponse<String>(400, "Invalid id provided", null);
+        repository.deleteById(id);
+        return new HttpResponse<String>(200, "Mark Deleted With success!", null);
     }
 }
