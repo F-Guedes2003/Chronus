@@ -107,4 +107,9 @@ public class MarkService {
         LocalTime exit = workShift.getLast().getMarkTime();
         return Duration.between(entry,exit);
     }
+
+
+    public HttpResponse<String> deleteMarkById(long id) {
+        return null;
+    }
 }

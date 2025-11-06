@@ -32,4 +32,9 @@ public class markController {
     public HttpResponse<Mark> markRoute(@RequestBody Mark requestBody) {
         return service.addNewMark(requestBody);
     }
+
+    @DeleteMapping("/mark/{id}")
+    public HttpResponse<String> deleteMarkById (@PathVariable long id) {
+        return service.deleteMarkById(id);
+    }
 }
