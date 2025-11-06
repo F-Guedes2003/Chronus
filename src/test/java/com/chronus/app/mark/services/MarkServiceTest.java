@@ -200,6 +200,15 @@ public class MarkServiceTest {
 
             assertThat(response).isEqualTo(expectedResult);
         }
+
+        @Test
+        @DisplayName("Should return 404 when provided a valid id but there is an inexistent mark")
+        public void deleteInexistentMark() {
+            var response = sut.deleteMarkById(1L);
+            var expectedResult = new HttpResponse<String>(404, "Mark Not Found!", null);
+
+            assertThat(response).isEqualTo(expectedResult);
+        }
     }
 
     @Nested
