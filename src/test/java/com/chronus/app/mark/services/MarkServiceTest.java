@@ -12,6 +12,7 @@ import com.chronus.app.utils.HttpResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -176,6 +177,20 @@ public class MarkServiceTest {
         User user = new User("Aislan","teste123","aislan@teste.com");
         Mark mark = new Mark(null,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
+    }
+
+    @Nested
+    @DisplayName("TDD tests")
+    public class tddTests {
+        @ParameterizedTest
+        @CsvSource({"0", "-1"})
+        @DisplayName("Should return 400 given an invalid id")
+        public void deleteExistingMarkById(long id) {
+            var response = sut.deleteMarkById(id);
+            var expectedResult = new HttpResponse<String>(400, "Invalid id provided", null);
+
+            assertThat(response).isEqualTo(expectedResult);
+        }
     }
 
     @Nested
