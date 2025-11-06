@@ -109,7 +109,7 @@ public class MarkService {
     }
 
 
-    public HttpResponse<String> deleteMarkById(long id) {
+    public HttpResponse<String> deleteMarkById(Long id) {
 
         return new HttpResponse<String>(400, "Invalid id provided", null);
     }

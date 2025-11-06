@@ -185,8 +185,17 @@ public class MarkServiceTest {
         @ParameterizedTest
         @CsvSource({"0", "-1"})
         @DisplayName("Should return 400 given an invalid id")
-        public void deleteExistingMarkById(long id) {
+        public void deleteInvalidId(long id) {
             var response = sut.deleteMarkById(id);
+            var expectedResult = new HttpResponse<String>(400, "Invalid id provided", null);
+
+            assertThat(response).isEqualTo(expectedResult);
+        }
+
+        @Test
+        @DisplayName("Should return 400 when provided a null id")
+        public void deleteNullId() {
+            var response = sut.deleteMarkById(null);
             var expectedResult = new HttpResponse<String>(400, "Invalid id provided", null);
 
             assertThat(response).isEqualTo(expectedResult);

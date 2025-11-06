@@ -34,7 +34,7 @@ public class markController {
     }
 
     @DeleteMapping("/mark/{id}")
-    public HttpResponse<String> deleteMarkById (@PathVariable long id) {
+    public HttpResponse<String> deleteMarkById (@PathVariable Long id) {
         return service.deleteMarkById(id);
     }
 }
