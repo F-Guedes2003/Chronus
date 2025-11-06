@@ -209,6 +209,19 @@ public class MarkServiceTest {
 
             assertThat(response).isEqualTo(expectedResult);
         }
+
+        @Test
+        @DisplayName("Should return 200 when provided a valid id and mark exists")
+        public void deleteValidMark() {
+            var mark = new Mark(null, LocalTime.of(8,0), LocalDate.of(2025,1,1), true, MarkType.ENTRY);
+            when(repositoryMock.getMarkById(1))
+                    .thenReturn(mark);
+
+            var response = sut.deleteMarkById(1);
+            var expectedResult = new HttpResponse<String>(200, "Mark Deleted With success!", null);
+
+            assertThat(response).isEqualTo(expectedResult);
+        }
     }
 
     @Nested
