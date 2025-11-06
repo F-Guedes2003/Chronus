@@ -109,7 +109,11 @@ public class MarkService {
     }
 
 
-    public HttpResponse<String> deleteMarkById(Long id) {
+    public HttpResponse<String> deleteMarkById(Integer id) {
+
+        if(id == null || id <= 0 ) return new HttpResponse<String>(400, "Invalid id provided", null);
+
+        if(!repository.findMarkById(id)) return new HttpResponse<String>(404, "Mark Not Found!", null);
 
         return new HttpResponse<String>(400, "Invalid id provided", null);
     }
