@@ -28,6 +28,11 @@ public class markController {
         return service.getMarksByMonthAndYear(LocalDate.of(year,month,1));
     }
 
+    @PutMapping("/mark")
+    public HttpResponse<Mark> editMark(@RequestBody Mark markToEdit){
+        return service.editMark(markToEdit);
+    }
+
     @PostMapping("/mark")
     public HttpResponse<Mark> markRoute(@RequestBody Mark requestBody) {
         return service.addNewMark(requestBody);

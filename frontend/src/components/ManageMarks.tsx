@@ -1,19 +1,16 @@
-import { useMemo, useState } from "react";
+import {useState } from "react";
 import Navbar from "./Navbar";
 import Popup from "reactjs-popup";
 
 type MarkType = 'ENTRY' | 'EXIT';
 
-interface Mark {
-  markTime: string;
-  markDate: string;
-  type: MarkType;
-}
 
-interface GroupedMark {
+interface Mark {
+    id: number,
+    user: string;
+    markTime: string;
     markDate: string;
-    entryTime: string;
-    exitTime: string;
+    type: MarkType;
 }
 
 const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
@@ -22,31 +19,7 @@ const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
 export function ManageMarks(){
 
     const [marks, setMarks] = useState<Mark[]>([]);
-
-    const groupedMarks = useMemo(() => {
-        const groups = new Map<string, GroupedMark>();
-
-        marks.forEach(mark => {
-            const date = mark.markDate;
-            
-            if (!groups.has(date)) {
-                groups.set(date, {
-                    markDate: date,
-                    entryTime: '',
-                    exitTime: ''
-                });
-            }
-
-            const currentGroup = groups.get(date)!;
-
-            if (mark.type === 'ENTRY') {
-                currentGroup.entryTime = currentGroup.entryTime ? `${currentGroup.entryTime}, ${mark.markTime}` : mark.markTime;
-            } else if (mark.type === 'EXIT') {
-                currentGroup.exitTime = currentGroup.exitTime ? `${currentGroup.exitTime}, ${mark.markTime}` : mark.markTime;
-            }
-        });
-        return Array.from(groups.values());
-    }, [marks]);
+    const [mark, setMark] = useState<Mark>();
 
     const handleChange = async(e: React.ChangeEvent<HTMLSelectElement>) => {
         const numMonth = e.target.selectedIndex + 1;
@@ -59,14 +32,9 @@ export function ManageMarks(){
             const json = await response.json()
             const data = json.data
             setMarks(data);
-            console.log(data)
         } catch (err) {
             console.error(err);
         } 
-    }
-
-    const handleEdit = async(e: GroupedMark) => {
-
     }
     
     return(
@@ -93,19 +61,12 @@ export function ManageMarks(){
                         <span className="point1-label">Ponto Entrada</span>
                         <span className="point2-label">Ponto Saida</span>
                     </li>
-                    {groupedMarks.map((group) =>
+                    {marks.map((mark) =>
                         <li className="day">
-                            <span className="point-body">{group.markDate}</span>
-                            <span className="point-body">{group.entryTime}</span>
-                            <span className="point-body">{group.exitTime}</span>
-                            <Popup trigger={<button className="edit"> Editar </button>} modal>¨
-                                <div className="modal">
-                                    <input type="text" value={group.markDate}/>
-                                    <input type="text" value={group.entryTime}/>
-                                    <input type="text" value={group.exitTime}/>
-                                    <button onClick={() => handleEdit(group)} className="edit">Salvar</button>
-                                </div>
-                            </Popup>
+                            <span className="point-body">{mark.markDate}</span>
+                            <span className="point-body">{mark.markTime}</span>
+                            <span className="point-body">{mark.type == 'ENTRY' ? 'Entrada' : 'Saida'}</span>
+                            <button className="edit"> Editar </button>
                         </li>
                     )}
                 </ul>

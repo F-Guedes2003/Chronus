@@ -56,6 +56,11 @@ public class MarkService {
             return new HttpResponse<Mark>(400, "user is Empty", null);
         }
 
+        if(userRepository.findUserById(mark.getUser().getId()).isEmpty()){
+            return new HttpResponse<Mark>(404, "User is not found!", null);
+
+        }
+
         mark.setUser(userRepository.findUserById(userId).get());
 
         if(mark.getMarkTime() == null) {
@@ -88,7 +93,14 @@ public class MarkService {
     }
 
     public HttpResponse<Mark> editMark(Mark mark) {
+
+        if(userRepository.findUserById(mark.getUser().getId()).isEmpty()){
+            return new HttpResponse<Mark>(404, "User is not found!", null);
+
+        }
+
         Mark markToEdit = repository.getMarkById(mark.getId());
+
 
         if (!repository.findMarkById(mark.getId()))
             return new HttpResponse<Mark>(404, "Inexistent mark for this user.", null);
