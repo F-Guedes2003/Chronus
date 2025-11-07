@@ -121,6 +121,6 @@ public class MarkService {
     }
 
     public HttpResponse<String> deleteById(long id) {
-        return new HttpResponse<>(200, "", null);
+        return new HttpResponse<>(204, "", null);
     }
 }

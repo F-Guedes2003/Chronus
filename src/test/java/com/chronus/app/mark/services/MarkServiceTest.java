@@ -181,6 +181,16 @@ public class MarkServiceTest {
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
     }
 
+    @Test
+    @DisplayName("Should return 204 if mark is deleted")
+    @Tag("SructuralTest")
+    @Tag("UnitTest")
+    public void shouldReturn204IfMarkIsDeleted(){
+        User user = new User("Aislan","teste123","aislan@teste.com");
+        Mark mark = new Mark(user,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
+        assertThat(sut.deleteById(mark.getId())).isEqualTo(new HttpResponse<>(204, "", null));
+    }
+
     @Nested
     public class GetMarks {
         @Test
