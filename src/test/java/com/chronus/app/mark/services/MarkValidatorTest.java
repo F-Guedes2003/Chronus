@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class MarkValidatorTest {
     MarkValidator sut;
-    User generalUser = new User("Flaco López", "password", "Flaquito Matador");
+    User generalUser = new User("Flaco López", "password", "Flaquito Matador",1850);
     @Mock MarkRepository repositoryMock;
 
     @BeforeEach
@@ -42,14 +42,14 @@ public class MarkValidatorTest {
     @Test
     @DisplayName("Verifying if a dateTime is already marked")
     public void verifyingIfADateTimeIsMarked() {
-        var mark  = new Mark(new User("Flaco López", "password", "flaquitomatador@sep.com"), LocalTime.now(), LocalDate.now());
+        var mark  = new Mark(new User("Flaco López", "password", "flaquitomatador@sep.com",1850), LocalTime.now(), LocalDate.now());
         when(repositoryMock.getMarkByMarkTimeAndMarkDate(mark.getMarkTime(), mark.getMarkDate())).thenReturn(List.of(mark));
 
         assertThat(sut.isDateTimeAlreadyMarked(mark)).isEqualTo(true);
     }
 
     static Stream<Arguments> marksProvider() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         var date = LocalDate.of(2025, 3, 12);
         List<Mark> listOne = List.of(new Mark(user, LocalTime.of(7, 25, 0), date),
                 new Mark(user, LocalTime.of(7, 50, 0), date),
@@ -74,7 +74,7 @@ public class MarkValidatorTest {
     }
 
     static Stream<Arguments> markTypeProvider() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         LocalDate date = LocalDate.of(2025, 3, 12);
         List<Mark> listOne = List.of(
                 new Mark(user, LocalTime.of(7, 25, 0), date, true, MarkType.ENTRY),
@@ -93,7 +93,7 @@ public class MarkValidatorTest {
     @Test
     @DisplayName("Should return true on mark type verification if there is any Mark on the day")
     public void shouldReturnTrueOnAnEmptyDayOnMarkTypeVerification() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         var date = LocalDate.of(2025, 3, 12);
         var mark = new Mark(user, LocalTime.of(8, 50, 0), date, true, MarkType.EXIT);
         when(repositoryMock.getMarksByMarkDate(mark.getMarkDate())).thenReturn(List.of());
@@ -102,7 +102,7 @@ public class MarkValidatorTest {
     }
 
     static Stream<Arguments> marksTypeProviderOfValidNeighbours() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         var date = LocalDate.of(2025, 3, 12);
         return Stream.of(
                 Arguments.of(List.of(
@@ -136,7 +136,7 @@ public class MarkValidatorTest {
     }
 
     static Stream<Arguments> marksTypeProviderOfInvalidNeighbours() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         var date = LocalDate.of(2025, 3, 12);
         return Stream.of(
                 Arguments.of(List.of(
@@ -166,7 +166,7 @@ public class MarkValidatorTest {
     }
 
     static Stream<Arguments> marksBeforeOrAtFirstMarkOfTheDayProvider() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         var date = LocalDate.of(2025, 3, 12);
 
         return Stream.of(Arguments.of(
@@ -190,7 +190,7 @@ public class MarkValidatorTest {
     }
 
     static Stream<Arguments> exitMarksWithoutEntryProvider() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         var date = LocalDate.of(2025, 3, 12);
 
         return Stream.of(Arguments.of(List.of(),
@@ -227,7 +227,7 @@ public class MarkValidatorTest {
     }
 
     static Stream<Arguments> futureMarkProvider() {
-        User user = new User("Flaco López", "password", "Flaquito Matador");
+        User user = new User("Flaco López", "password", "Flaquito Matador",1850);
         var date = LocalDate.of(2025, 3, 12);
 
         return Stream.of(Arguments.of(LocalDate.of(2025, 3, 12),
@@ -254,7 +254,7 @@ public class MarkValidatorTest {
         @Test
         @DisplayName("Teting isValidMarkType when the added mark will be the first mark of the day")
         public void testingValidMarkTypeWhenTheNewItemIsTheFirstPoint() {
-            var user = new User("Flaco Lopez", "Flaquito", "flakitomatador@sep.com");
+            var user = new User("Flaco Lopez", "Flaquito", "flakitomatador@sep.com",1850);
             var date = LocalDate.of(2025, 3, 12);
             var mark = new Mark(user, LocalTime.of(8, 0, 0), date, true, MarkType.ENTRY);
 

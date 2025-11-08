@@ -45,7 +45,7 @@ public class MarkServiceTest {
     @Tag("Functional")
     public void addingANewMarkTest() {
         var date = LocalDate.of(2022, 3, 22);
-        var user = new User(1,"Flaco Lópes", "password", "flacomatador@sep.com");
+        var user = new User(1,"Flaco Lópes", "password", "flacomatador@sep.com",1850);
         var mark = new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY);
 
         when(userRepositoryMock.findUserById(1L))
@@ -66,7 +66,7 @@ public class MarkServiceTest {
     @Tag("TDD")
     public void shouldReturn400WhenUserIdIsZero() {
         var date = LocalDate.of(2022, 3, 22);
-        var user = new User("Flaco", "password", "flaco@sep.com");
+        var user = new User("Flaco", "password", "flaco@sep.com",1850);
         var mark = new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY);
 
         assertThat(sut.addNewMark(mark))
@@ -79,7 +79,7 @@ public class MarkServiceTest {
     public void shouldReturn400WhenUserNotFound() {
         // Arrange
         var date = LocalDate.of(2022, 3, 22);
-        var user = new User(1, "Flaco", "password", "flaco@sep.com");
+        var user = new User(1, "Flaco", "password", "flaco@sep.com",1850);
         var mark = new Mark(user, LocalTime.of(8, 25), date, true, MarkType.ENTRY);
 
         when(userRepositoryMock.findUserById(1L))
@@ -97,7 +97,7 @@ public class MarkServiceTest {
     public void addingANewMarkToAnUnavailableDate() {
         var date = LocalDate.of(2022, 3, 22);
         var time = LocalTime.of(8, 25);
-        var user = new User(1,"Flaco Lópes", "password", "flacomatador@sep.com");
+        var user = new User(1,"Flaco Lópes", "password", "flacomatador@sep.com",1850);
         var mark = new Mark(user, time, date);
 
         when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
@@ -110,7 +110,7 @@ public class MarkServiceTest {
     @Tag("UnitTest")
     @Tag("TDD")
     public void editingAInexistentMark() {
-        User user = new User(1,"Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
+        User user = new User(1,"Bruno Fuchs", "raça123", "brunofuchs3@sep.com",1850);
         Mark editedMark = new Mark(user, LocalTime.of(12, 0), LocalDate.of(2025, 3, 3));
         when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
         when(repositoryMock.findById(editedMark.getId())).thenReturn(null);
@@ -123,7 +123,7 @@ public class MarkServiceTest {
     @Tag("Functional")
     public void editingValidMark() {
         LocalDate date = LocalDate.of(2022, 3, 26);
-        User user = new User(1,"Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
+        User user = new User(1,"Bruno Fuchs", "raça123", "brunofuchs3@sep.com",1850);
         Mark markEdit = new Mark(user, LocalTime.of(8, 0), date, true, MarkType.ENTRY);
         when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
         when(repositoryMock.existsById(markEdit.getId())).thenReturn(true);
@@ -137,7 +137,7 @@ public class MarkServiceTest {
     @Tag("TDD")
     public void shouldReturnTheWorkingHours(){
         LocalDate date = LocalDate.of(2025,1,6);
-        User user = new User("Aislan","teste123","aislan@teste.com");
+        User user = new User("Aislan","teste123","aislan@teste.com",1850);
         Mark entry = new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY);
         Mark exit = new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT);
         assertThat(sut.calculateWorkShift(List.of(entry,exit))).isEqualTo(Duration.ofHours(10));
@@ -148,7 +148,7 @@ public class MarkServiceTest {
     @Tag("StructuralTest")
     @Tag("UnitTest")
     public void shouldReturn400IfMarkTimeIsNull(){
-        User user = new User(1,"Aislan","teste123","aislan@teste.com");
+        User user = new User(1,"Aislan","teste123","aislan@teste.com",1850);
         Mark mark = new Mark(user,null,LocalDate.of(2025,1,1),true,MarkType.ENTRY);
         when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "Mark time field must not be empty!", null));
@@ -159,7 +159,6 @@ public class MarkServiceTest {
     @Tag("StructuralTest")
     @Tag("UnitTest")
     public void shouldReturn400IfUserIsNull(){
-        User user = new User("Aislan","teste123","aislan@teste.com");
         Mark mark = new Mark(null,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
         assertThat(sut.addNewMark(mark)).isEqualTo(new HttpResponse<Mark>(400, "User field must not be empty!", null));
     }
@@ -169,7 +168,7 @@ public class MarkServiceTest {
     @Tag("SructuralTest")
     @Tag("UnitTest")
     public void shouldReturn204IfMarkIsDeleted(){
-        User user = new User("Aislan","teste123","aislan@teste.com");
+        User user = new User("Aislan","teste123","aislan@teste.com",1850);
         Mark mark = new Mark(user,LocalTime.of(8,0),LocalDate.of(2025,1,1),true,MarkType.ENTRY);
         assertThat(sut.deleteById(mark.getId())).isEqualTo(new HttpResponse<>(204, "", null));
     }
@@ -182,7 +181,7 @@ public class MarkServiceTest {
         @Tag("Functional")
         public void shouldReturnAllMarksFromGivenMonthAndYear() {
             var date = LocalDate.of(2025, 11, 1);
-            var user = new User(1, "Flaco", "password", "flaco@sep.com");
+            var user = new User(1, "Flaco", "password", "flaco@sep.com",1850);
             var mark1 = new Mark(user, LocalTime.of(8, 0), LocalDate.of(2025, 11, 2), true, MarkType.ENTRY);
             var mark2 = new Mark(user, LocalTime.of(18, 0), LocalDate.of(2025, 11, 2), true, MarkType.EXIT);
 
