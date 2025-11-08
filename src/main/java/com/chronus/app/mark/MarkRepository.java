@@ -25,7 +25,7 @@ public interface MarkRepository extends JpaRepository<Mark, Long> {
 
     boolean existsById(long id);
 
-    @Query("SELECT m FROM Mark m WHERE YEAR(m.markDate) = :year AND MONTH(m.markDate) = :month")
+    @Query("SELECT m FROM Mark m WHERE YEAR(m.markDate) = :year AND MONTH(m.markDate) = :month ORDER BY DATE(m.markDate),m.markTime")
     List<Mark> findAllByYearAndMonth(@Param("year") int year, @Param("month") int month);
 
     @Transactional

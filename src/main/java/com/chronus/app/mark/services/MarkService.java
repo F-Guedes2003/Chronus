@@ -102,6 +102,10 @@ public class MarkService {
 
         }
 
+        if(repository.getMarkByMarkTimeAndMarkDate(editMark.getMarkTime(),editMark.getMarkDate()) != null){
+            return new HttpResponse<Mark>(400,"Already have a mark for this time and date",null);
+        }
+
         if (!repository.existsById(mark.getId()))
             return new HttpResponse<Mark>(404, "Inexistent mark for this user.", null);
 

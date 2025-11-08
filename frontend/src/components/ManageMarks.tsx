@@ -1,4 +1,4 @@
-import {useState, type FormEvent } from "react";
+import {use, useState, type FormEvent } from "react";
 import Navbar from "./Navbar";
 import Popup from "reactjs-popup";
 
@@ -15,6 +15,7 @@ interface HttpResponse<T> {
 }
 
 interface Mark {
+  id: string;  
   user: User;
   markTime: string;
   markDate: string;
@@ -26,7 +27,8 @@ const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
 
 export function ManageMarks(){
 
-    const [userId, setUserId] = useState<number | ''>('');
+    const [id, setId] = useState('');
+    const [userId, setUserId] = useState<number | ''>(34);
     const [marks, setMarks] = useState<Mark[]>([]);
     const [mark, setMark] = useState<Mark>();
     const [markTime, setMarkTime] = useState('');
@@ -43,15 +45,16 @@ export function ManageMarks(){
     }
 
     const payload: Mark = {
-      user: { id: userId as number },
-      markTime,
-      markDate,
-      type: markType,
+        user: { id: userId as number },
+        markTime,
+        markDate,
+        type: markType,
+        id
     };
 
     try {
       console.log(payload)
-      const response = await fetch('http://localhost:8080/api/v1/marks/mark', {
+      const response = await fetch(`http://localhost:8080/api/v1/marks/mark/${payload.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -113,8 +116,8 @@ export function ManageMarks(){
                             <Popup trigger={<button className="edit"> Editar </button>} modal>
                                 <div className="modal">
                                     <form onSubmit={handleEdit}>
-                                        <input type="date" onChange={(e) => setMarkDate(e.target.value)} value={mark.markDate}/>
-                                        <input type="time" onChange={(e) => setMarkTime(e.target.value)} value={mark.markTime}/>
+                                        <input type="date" onChange={(e) => setMarkDate(e.target.value)}/>
+                                        <input type="time" onChange={(e) => setMarkTime(e.target.value)}/>
                                         <select
                                             value={markType}
                                             onChange={(e) => setMarkType(e.target.value as MarkType)}
@@ -122,7 +125,7 @@ export function ManageMarks(){
                                             <option value='ENTRY'>Entrada</option>
                                             <option value='EXIT'>Saída</option>
                                         </select>
-                                        <button type="submit" className="edit"> Salvar </button>
+                                        <button onClick={(e) => setId(mark.id)}  type="submit" className="edit"> Salvar </button>
                                     </form>
                                 </div>
                             </Popup>
