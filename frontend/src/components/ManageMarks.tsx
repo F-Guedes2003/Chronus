@@ -1,4 +1,4 @@
-import {use, useState, type FormEvent } from "react";
+import {useState, type FormEvent } from "react";
 import Navbar from "./Navbar";
 import Popup from "reactjs-popup";
 
@@ -126,6 +126,7 @@ export function ManageMarks(){
                                             <option value='EXIT'>Saída</option>
                                         </select>
                                         <button onClick={(e) => setId(mark.id)}  type="submit" className="edit"> Salvar </button>
+                                        {message && <p className='message'>{message}</p>}
                                     </form>
                                 </div>
                             </Popup>
