@@ -131,7 +131,7 @@ header {
   padding: 0;
 }
 
-select {
+.select-month {
   border-radius: 10px;
   padding: 5px;
   margin-left: 10px;
@@ -140,4 +140,8 @@ select {
 .point-body {
   font-weight: normal;
   font-size: 12px;
+}
+
+.modal {
+  background-color: white;
 }

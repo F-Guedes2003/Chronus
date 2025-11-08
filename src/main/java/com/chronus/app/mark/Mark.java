@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -41,7 +41,7 @@ public class Mark {
         this.type = type;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

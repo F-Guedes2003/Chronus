@@ -7,6 +7,7 @@ interface User {
 
 interface Mark {
   user: User;
+  id: number;
   markTime: string;
   markDate: string;
   type: MarkType;
@@ -20,6 +21,7 @@ interface HttpResponse<T> {
 
 function MarkForm() {
   const [userId, setUserId] = useState<number | ''>('');
+  const [id, setId] = useState(0);
   const [markTime, setMarkTime] = useState('');
   const [markDate, setMarkDate] = useState('');
   const [markType, setMarkType] = useState<MarkType>('ENTRY');
@@ -35,9 +37,10 @@ function MarkForm() {
 
     const payload: Mark = {
       user: { id: userId as number },
+      id,
       markTime,
       markDate,
-      type: markType,
+      type: markType
     };
 
     try {

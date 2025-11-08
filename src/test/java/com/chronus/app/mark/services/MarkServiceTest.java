@@ -84,7 +84,7 @@ public class MarkServiceTest {
 
         when(userRepositoryMock.findUserById(1L))
                 .thenReturn(Optional.empty());
-        assertThat(sut.editMark(mark)).isEqualTo(new HttpResponse<>(404, "User is not found!", null));
+        assertThat(sut.editMark(mark.getId(), mark)).isEqualTo(new HttpResponse<>(404, "User is not found!", null));
         assertThat(sut.addNewMark(mark))
                 .isEqualTo(new HttpResponse<>(404, "User is not found!", null));
     }
@@ -113,8 +113,8 @@ public class MarkServiceTest {
         User user = new User(1,"Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
         Mark editedMark = new Mark(user, LocalTime.of(12, 0), LocalDate.of(2025, 3, 3));
         when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
-        when(repositoryMock.getMarkById(editedMark.getId())).thenReturn(null);
-        assertThat(sut.editMark(editedMark)).isEqualTo(new HttpResponse<Mark>(404, "Inexistent mark for this user.", null));
+        when(repositoryMock.findById(editedMark.getId())).thenReturn(null);
+        assertThat(sut.editMark(editedMark.getId(),editedMark)).isEqualTo(new HttpResponse<Mark>(404, "Inexistent mark for this user.", null));
     }
 
     @Test
@@ -126,26 +126,9 @@ public class MarkServiceTest {
         User user = new User(1,"Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
         Mark markEdit = new Mark(user, LocalTime.of(8, 0), date, true, MarkType.ENTRY);
         when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
-        when(repositoryMock.findMarkById(markEdit.getId())).thenReturn(true);
-        when(repositoryMock.getMarkById(markEdit.getId())).thenReturn(markEdit);
-        assertThat(sut.editMark(markEdit)).isEqualTo(new HttpResponse<Mark>(200, "Mark successfully edited", markEdit));
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = MarkType.class, names = {"ENTRY", "EXIT"})
-        @DisplayName("Editing mark with redundant mark type in list")
-    @Tag("UnitTest")
-    @Tag("TDD")
-    public void editingMarkRedundantMarkTypeInList(MarkType mType) {
-        LocalDate date = LocalDate.of(2022, 3, 26);
-        LocalTime time = LocalTime.of(7, 59);
-        User user = new User(1,"Bruno Fuchs", "raça123", "brunofuchs3@sep.com");
-        Mark editedMark = new Mark(user, time, date, true, mType);
-        when(userRepositoryMock.findUserById(1L)).thenReturn(Optional.of(user));
-        when(repositoryMock.findMarkById(editedMark.getId())).thenReturn(true);
-        when(repositoryMock.getMarkById(editedMark.getId())).thenReturn(editedMark);
-        when(repositoryMock.existsByTypeAndMarkDate(mType,date)).thenReturn(true);
-        assertThat(sut.editMark(editedMark)).isEqualTo(new HttpResponse<Mark>(400, "Already has the mark type for this day", null));
+        when(repositoryMock.existsById(markEdit.getId())).thenReturn(true);
+        when(repositoryMock.findById(markEdit.getId())).thenReturn(Optional.of(markEdit));
+        assertThat(sut.editMark(markEdit.getId(),markEdit)).isEqualTo(new HttpResponse<Mark>(200, "Mark successfully edited", markEdit));
     }
 
     @Test

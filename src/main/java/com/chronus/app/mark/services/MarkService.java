@@ -92,25 +92,21 @@ public class MarkService {
         return new HttpResponse<Mark>(201, "Mark added with success!", mark);
     }
 
-    public HttpResponse<Mark> editMark(Mark mark) {
+    public HttpResponse<Mark> editMark(long id, Mark editMark) {
+
+        Optional<Mark> markOpt = repository.findById(id);
+        Mark mark = markOpt.get();
 
         if(userRepository.findUserById(mark.getUser().getId()).isEmpty()){
             return new HttpResponse<Mark>(404, "User is not found!", null);
 
         }
 
-        Mark markToEdit = repository.getMarkById(mark.getId());
-
-
-        if (!repository.findMarkById(mark.getId()))
+        if (!repository.existsById(mark.getId()))
             return new HttpResponse<Mark>(404, "Inexistent mark for this user.", null);
 
-        if(repository.existsByTypeAndMarkDate(mark.getType(),mark.getMarkDate()))
-            return new HttpResponse<Mark>(400,"Already has the mark type for this day",null);
 
-        markToEdit.setMarkTime(mark.getMarkTime());
-        markToEdit.setType(mark.getType());
-        repository.save(markToEdit);
+        repository.update(editMark.getMarkDate(),editMark.getMarkTime(),editMark.getType(), id);
         return new HttpResponse<Mark>(200,"Mark successfully edited",mark);
     }
 

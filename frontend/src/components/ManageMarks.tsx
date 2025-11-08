@@ -1,16 +1,24 @@
-import {useState } from "react";
+import {useState, type FormEvent } from "react";
 import Navbar from "./Navbar";
 import Popup from "reactjs-popup";
 
 type MarkType = 'ENTRY' | 'EXIT';
 
+interface User {
+  id: number;
+}
+
+interface HttpResponse<T> {
+  status: number;
+  message: string;
+  data: T | null;
+}
 
 interface Mark {
-    id: number,
-    user: string;
-    markTime: string;
-    markDate: string;
-    type: MarkType;
+  user: User;
+  markTime: string;
+  markDate: string;
+  type: MarkType;
 }
 
 const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
@@ -18,8 +26,44 @@ const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
 
 export function ManageMarks(){
 
+    const [userId, setUserId] = useState<number | ''>('');
     const [marks, setMarks] = useState<Mark[]>([]);
     const [mark, setMark] = useState<Mark>();
+    const [markTime, setMarkTime] = useState('');
+    const [markDate, setMarkDate] = useState('');
+    const [markType,setMarkType] = useState<MarkType>('ENTRY');
+    const [message, setMessage] = useState('');
+
+    const handleEdit = async(e: FormEvent) => {
+        e.preventDefault()
+
+    if (!markTime || !markDate) {
+      setMessage('Todos os campos são obrigatórios!');
+      return;
+    }
+
+    const payload: Mark = {
+      user: { id: userId as number },
+      markTime,
+      markDate,
+      type: markType,
+    };
+
+    try {
+      console.log(payload)
+      const response = await fetch('http://localhost:8080/api/v1/marks/mark', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data: HttpResponse<Mark> = await response.json();
+      setMessage(`${data.status} - ${data.message}`);
+    } catch (err) {
+      console.error(err);
+      setMessage('Erro ao enviar marcação!');
+    }
+    }
 
     const handleChange = async(e: React.ChangeEvent<HTMLSelectElement>) => {
         const numMonth = e.target.selectedIndex + 1;
@@ -44,12 +88,12 @@ export function ManageMarks(){
                 <header>
                     Gerenciamento de Pontos
                     <div className="select-container">
-                        <select onChange={handleChange}>
+                        <select className="select-month" onChange={handleChange}>
                             {months.map((month, index) =>
                                 <option key={index} value={month}>{month}</option>
                             )}
                         </select>
-                        <select>
+                        <select className="select-month">
                             <option>2025</option>
                         </select>
                     </div>
@@ -66,7 +110,22 @@ export function ManageMarks(){
                             <span className="point-body">{mark.markDate}</span>
                             <span className="point-body">{mark.markTime}</span>
                             <span className="point-body">{mark.type == 'ENTRY' ? 'Entrada' : 'Saida'}</span>
-                            <button className="edit"> Editar </button>
+                            <Popup trigger={<button className="edit"> Editar </button>} modal>
+                                <div className="modal">
+                                    <form onSubmit={handleEdit}>
+                                        <input type="date" onChange={(e) => setMarkDate(e.target.value)} value={mark.markDate}/>
+                                        <input type="time" onChange={(e) => setMarkTime(e.target.value)} value={mark.markTime}/>
+                                        <select
+                                            value={markType}
+                                            onChange={(e) => setMarkType(e.target.value as MarkType)}
+                                        >
+                                            <option value='ENTRY'>Entrada</option>
+                                            <option value='EXIT'>Saída</option>
+                                        </select>
+                                        <button type="submit" className="edit"> Salvar </button>
+                                    </form>
+                                </div>
+                            </Popup>
                         </li>
                     )}
                 </ul>
