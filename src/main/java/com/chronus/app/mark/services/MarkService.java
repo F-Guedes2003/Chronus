@@ -3,18 +3,24 @@ package com.chronus.app.mark.services;
 import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
+import com.chronus.app.user.User;
 import com.chronus.app.user.UserRepository;
 import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.lang.Math.round;
 
 @Service
 public class MarkService {
@@ -122,5 +128,28 @@ public class MarkService {
 
     public HttpResponse<String> deleteById(long id) {
         return new HttpResponse<>(204, "", null);
+    }
+
+    public double calculateSalary(User user, LocalDate date) {
+        List<Mark> monthlyMarks = repository.findAllByYearAndMonth(date.getYear(),date.getMonthValue());
+        Duration monthlyWorkShift = Duration.ZERO;
+        int workingDays = 22;
+        int workingHours = 10;
+
+        for(int i = 0;i < monthlyMarks.size();i++){
+            LocalDate day = monthlyMarks.get(i).getMarkDate();
+
+            if(i+1 > monthlyMarks.size() - 1) break;
+
+            if(monthlyMarks.get(i+1).getMarkDate().equals(day)){
+                monthlyWorkShift = calculateWorkShift(List.of(monthlyMarks.get(i),monthlyMarks.get(i+1)));
+            }
+        }
+
+        double dailySalary = user.getSalary() / workingDays;
+        double hourSalary = dailySalary / workingHours;
+        double result = new BigDecimal(hourSalary * monthlyWorkShift.toHours()).setScale(2, RoundingMode.FLOOR).doubleValue();
+
+        return result;
     }
 }

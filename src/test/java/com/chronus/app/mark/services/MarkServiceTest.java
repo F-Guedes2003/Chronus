@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -142,6 +143,26 @@ public class MarkServiceTest {
         Mark exit = new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT);
         assertThat(sut.calculateWorkShift(List.of(entry,exit))).isEqualTo(Duration.ofHours(10));
     }
+
+    @Test
+    @DisplayName("Should return real user salary in the month")
+    public void shouldReturnRealUserSalaryInMonth(){
+        User user = new User("Aislan","teste123","aislan@teste.com",1850);
+        LocalDate date = LocalDate.of(2025,2,6);
+        LocalDate anotherDate = LocalDate.of(2025,2,7);
+
+        List<Mark> marks = new ArrayList<>();
+
+        marks.add(new Mark(user,LocalTime.of(8,0),date,true,MarkType.ENTRY));
+        marks.add(new Mark(user,LocalTime.of(18,0),date,true,MarkType.EXIT));
+
+        marks.add(new Mark(user,LocalTime.of(8,0),anotherDate,true,MarkType.ENTRY));
+        marks.add(new Mark(user,LocalTime.of(18,0),anotherDate,true,MarkType.EXIT));
+
+        when(repositoryMock.findAllByYearAndMonth(2025,2)).thenReturn(marks);
+        assertThat(sut.calculateSalary(user,date)).isEqualTo(84.09);
+    }
+
 
     @Test
     @DisplayName("Should return 400 if Mark time is null")
