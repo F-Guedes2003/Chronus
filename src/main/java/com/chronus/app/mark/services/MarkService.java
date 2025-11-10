@@ -3,6 +3,7 @@ package com.chronus.app.mark.services;
 import com.chronus.app.MarkType;
 import com.chronus.app.mark.Mark;
 import com.chronus.app.mark.MarkRepository;
+import com.chronus.app.mark.MonthlyReport;
 import com.chronus.app.user.User;
 import com.chronus.app.user.UserRepository;
 import com.chronus.app.utils.HttpResponse;
@@ -16,6 +17,7 @@ import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +29,7 @@ public class MarkService {
     protected MarkRepository repository;
     protected MarkValidator validator;
     protected UserRepository userRepository;
+    private MonthlyReport monthlyReport = new MonthlyReport();
 
     public MarkService() {
     }
@@ -130,26 +133,44 @@ public class MarkService {
         return new HttpResponse<>(204, "", null);
     }
 
-    public double calculateSalary(User user, LocalDate date) {
-        List<Mark> monthlyMarks = repository.findAllByYearAndMonth(date.getYear(),date.getMonthValue());
+    public long getMonthlyWorkHours(List<Mark> marks) {
         Duration monthlyWorkShift = Duration.ZERO;
-        int workingDays = 22;
-        int workingHours = 10;
 
-        for(int i = 0;i < monthlyMarks.size();i++){
-            LocalDate day = monthlyMarks.get(i).getMarkDate();
+        if(marks.isEmpty()) return 0;
 
-            if(i+1 > monthlyMarks.size() - 1) break;
-
-            if(monthlyMarks.get(i+1).getMarkDate().equals(day)){
-                monthlyWorkShift = calculateWorkShift(List.of(monthlyMarks.get(i),monthlyMarks.get(i+1)));
-            }
+        for(int i = 0;i < marks.size();i++){
+            LocalDate day = marks.get(i).getMarkDate();
+            if(i+1 > marks.size() - 1) break;
+            if(marks.get(i+1).getMarkDate().equals(day))
+                monthlyWorkShift = calculateWorkShift(List.of(marks.get(i),marks.get(i+1)));
         }
+        monthlyReport.setWorkedHours(monthlyWorkShift.toHours());
 
-        double dailySalary = user.getSalary() / workingDays;
-        double hourSalary = dailySalary / workingHours;
-        double result = new BigDecimal(hourSalary * monthlyWorkShift.toHours()).setScale(2, RoundingMode.FLOOR).doubleValue();
+        return monthlyWorkShift.toHours();
+    }
 
-        return result;
+    public Double calculateSalary(LocalDate date) {
+        List<Mark> monthlyMarks = repository.findAllByYearAndMonth(date.getYear(),date.getMonthValue());
+
+        if(monthlyMarks.isEmpty()) return 0.0;
+
+        long monthlyWorkShift = getMonthlyWorkHours(monthlyMarks);
+
+        double dailySalary = monthlyMarks.get(0).getUser().getSalary() / monthlyReport.getDaysWorkShift();
+        double hourSalary = dailySalary / monthlyReport.getHourDailyWorkShift();
+        double salary = new BigDecimal(hourSalary * monthlyWorkShift)
+                .setScale(2, RoundingMode.FLOOR).doubleValue();
+
+        return salary;
+    }
+
+    public void calculateMissingHours() {
+        monthlyReport.setMissingHours(monthlyReport.getMissingHours() - monthlyReport.getWorkedHours());
+    }
+
+    public HttpResponse<MonthlyReport> getMonthlyReport(LocalDate date) {
+        monthlyReport.setSalaryReceived(calculateSalary(date));
+        calculateMissingHours();
+        return new HttpResponse<MonthlyReport>(200,"Generated monthly report",monthlyReport);
     }
 }

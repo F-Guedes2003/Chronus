@@ -160,7 +160,7 @@ public class MarkServiceTest {
         marks.add(new Mark(user,LocalTime.of(18,0),anotherDate,true,MarkType.EXIT));
 
         when(repositoryMock.findAllByYearAndMonth(2025,2)).thenReturn(marks);
-        assertThat(sut.calculateSalary(user,date)).isEqualTo(84.09);
+        assertThat(sut.calculateSalary(date)).isEqualTo(new HttpResponse<Double>(200,"User's salary returned with success",84.09));
     }
 
 

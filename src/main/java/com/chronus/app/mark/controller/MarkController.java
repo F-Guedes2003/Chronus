@@ -1,6 +1,7 @@
 package com.chronus.app.mark.controller;
 
 import com.chronus.app.mark.Mark;
+import com.chronus.app.mark.MonthlyReport;
 import com.chronus.app.mark.services.MarkService;
 import com.chronus.app.utils.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/v1/marks")
-public class markController {
+public class MarkController {
 
     @Autowired
     protected MarkService service;
@@ -24,8 +25,12 @@ public class markController {
 
     @GetMapping
     public HttpResponse<List<Mark>> getMarksByMonthAndYear(@RequestParam int month, @RequestParam int year) {
-
         return service.getMarksByMonthAndYear(LocalDate.of(year,month,1));
+    }
+
+    @GetMapping("/salary")
+    public HttpResponse<MonthlyReport> getMonthlySalary(@RequestParam int month, @RequestParam int year) {
+        return service.getMonthlyReport(LocalDate.of(year,month,1));
     }
 
     @PutMapping("/mark/{id}")
