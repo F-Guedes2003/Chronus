@@ -28,8 +28,8 @@ public class MarkController {
         return service.getMarksByMonthAndYear(LocalDate.of(year,month,1));
     }
 
-    @GetMapping("/salary")
-    public HttpResponse<MonthlyReport> getMonthlySalary(@RequestParam int month, @RequestParam int year) {
+    @GetMapping("/report")
+    public HttpResponse<MonthlyReport> getMonthlyReport(@RequestParam int month, @RequestParam int year) {
         return service.getMonthlyReport(LocalDate.of(year,month,1));
     }
 
