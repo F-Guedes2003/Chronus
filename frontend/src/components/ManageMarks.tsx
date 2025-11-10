@@ -45,7 +45,9 @@ export function ManageMarks(){
     }
 
     const payload: Mark = {
-        user: { id: userId as number },
+        user: { 
+            id: userId as number, 
+        },
         markTime,
         markDate,
         type: markType,
@@ -72,6 +74,22 @@ export function ManageMarks(){
         const numMonth = e.target.selectedIndex + 1;
         try {
             const response = await fetch(`http://localhost:8080/api/v1/marks?month=${numMonth}&year=2025`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const json = await response.json()
+            const data = json.data
+            setMarks(data);
+        } catch (err) {
+            console.error(err);
+        } 
+    }
+
+        const monthlyReport = async(e: React.ChangeEvent<HTMLSelectElement>) => {
+        const numMonth = e.target.selectedIndex + 1;
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/marks/salary?month=${numMonth}&year=2025`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -134,7 +152,8 @@ export function ManageMarks(){
                     )}
                 </ul>
             </div>
-            
+            <div className="calculate-container">
+            </div>
         </>
     )
 }
